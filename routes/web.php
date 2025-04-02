@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Models\Profesor; // Importa el modelo Profesor
+use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\AulaController;
 
 Route::get('/', function () {
    return view('login');
@@ -57,3 +59,32 @@ Route::get('/coordinador/registrar-profesor', function () {
 Route::post('/coordinador/registrar-profesor', [AuthController::class, 'registerProfesor'])
     ->middleware('auth:coordinador')
     ->name('registrar.profesor.post');
+
+
+// Rutas para Grupos
+Route::get('/coordinador/grupos', [GrupoController::class, 'index'])
+->name('coordinador.grupos.index');
+
+Route::get('/coordinador/grupos/crear', [GrupoController::class, 'create'])
+->middleware('auth:coordinador')
+->name('coordinador.grupos.crear');
+
+Route::post('/coordinador/grupos', [GrupoController::class, 'store'])
+->middleware('auth:coordinador')
+->name('coordinador.grupos.guardar');
+
+
+Route::get('/coordinador/aulas', [AulaController::class, 'index'])
+     ->middleware('auth:coordinador')
+     ->name('coordinador.aulas.index'); // Nombre completo de la ruta
+
+Route::get('/coordinador/aulas/crear', [AulaController::class, 'create'])
+->middleware('auth:coordinador')
+->name('coordinador.aulas.crear');
+
+Route::post('/coordinador/aulas/', [AulaController::class, 'store'])
+->middleware('auth:coordinador')
+->name('coordinador.aulas.guardar');
+
+
+

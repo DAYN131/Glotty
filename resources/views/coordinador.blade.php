@@ -145,7 +145,7 @@
                             <h3 class="text-lg font-medium text-gray-700">Grupos</h3>
                         </div>
                         <p class="text-gray-600 mb-4">Gestiona los grupos académicos y asignación de alumnos.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
+                        <a href="{{ route('coordinador.grupos.index') }}" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
                             Acceder <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
