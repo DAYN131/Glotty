@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Models\Profesor; // Importa el modelo Profesor
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\AulaController;
+use App\Http\Controllers\HorarioController;
 
 Route::get('/', function () {
    return view('login');
@@ -74,6 +75,7 @@ Route::post('/coordinador/grupos', [GrupoController::class, 'store'])
 ->name('coordinador.grupos.guardar');
 
 
+// * * *  RUTAS PARA AULAS  *** //
 Route::get('/coordinador/aulas', [AulaController::class, 'index'])
      ->middleware('auth:coordinador')
      ->name('coordinador.aulas.index'); // Nombre completo de la ruta
@@ -87,4 +89,49 @@ Route::post('/coordinador/aulas/', [AulaController::class, 'store'])
 ->name('coordinador.aulas.guardar');
 
 
+// Mostrar formulario de edición
+Route::get('/coordinador/aulas/{id_aula}/editar', [AulaController::class, 'edit'])
+     ->middleware('auth:coordinador')
+     ->name('coordinador.aulas.editar');
 
+// Actualizar aula (PUT)
+Route::put('/coordinador/aulas/{id_aula}', [AulaController::class, 'update'])
+     ->middleware('auth:coordinador')
+     ->name('coordinador.aulas.actualizar');
+
+     // Eliminar aula (DELETE)
+Route::delete('/coordinador/aulas/{id_aula}/', [AulaController::class, 'destroy'])
+     ->middleware('auth:coordinador')
+     ->name('coordinador.aulas.eliminar');
+
+
+// * * *  RUTAS PARA HORARIOS  *** //
+
+Route::get('/coordinador/horarios', [HorarioController::class, 'index'])
+     ->middleware('auth:coordinador')
+     ->name('coordinador.horarios.index'); // Nombre completo de la ruta
+    
+Route::get('/coordinador/horarios/crear', [HorarioController::class, 'create'])
+->middleware('auth:coordinador')
+->name('coordinador.horarios.crear');
+
+Route::get('/coordinador/horarios/{id}/editar', [HorarioController::class, 'edit'])
+     ->middleware('auth:coordinador')
+     ->name('coordinador.horarios.editar');
+
+Route::post('/coordinador/horarios', [HorarioController::class, 'store'])
+     ->name('coordinador.horarios.guardar');
+
+Route::put('/{horario}', [HorarioController::class, 'update'])->name('coordinador.horarios.actualizar');
+
+// Eliminación (soft delete)
+Route::delete('/coordinador/horarios/{horario}', [HorarioController::class, 'destroy'])
+->name('coordinador.horarios.eliminar');
+
+// ver horarios eliminados
+Route::get('/coordinador/horarios/eliminados', [HorarioController::class, 'eliminados'])
+     ->name('coordinador.horarios.eliminados');
+
+// Restauración
+Route::patch('/coordinador/horarios/{horario}/restaurar', [HorarioController::class, 'restore'])
+->name('coordinador.horarios.restaurar');

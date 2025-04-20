@@ -80,6 +80,13 @@
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
                     <h1 class="text-2xl font-bold text-gray-800 mb-4 md:mb-0">Gestión de Grupos</h1>
                     <div class="flex flex-col sm:flex-row gap-3">
+
+
+                        <a href="{{ route('coordinador.horarios.index') }}" class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md transition-colors text-center flex items-center justify-center">
+                            <i class="fas fa-building mr-2"></i> Gestionar Horarios
+                        </a>
+
+
                         <a href="{{ route('coordinador.aulas.index') }}" class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md transition-colors text-center flex items-center justify-center">
                             <i class="fas fa-building mr-2"></i> Gestionar Aulas
                         </a>

@@ -113,13 +113,23 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $aula->numero_aula }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $aula->capacidad }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $aula->created_at->format('d/m/Y') }}</td>
+                                       
+
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                            <a href="#" class="text-blue-600 hover:text-blue-800 mr-3">
+                                            <a href="{{ route('coordinador.aulas.editar', $aula->id_aula) }}" 
+                                            class="text-blue-600 hover:text-blue-800 mr-3">
                                                 <i class="fas fa-edit"></i> Editar
                                             </a>
-                                            <a href="#" class="text-red-600 hover:text-red-800">
-                                                <i class="fas fa-trash-alt"></i> Eliminar
-                                            </a>
+                                            <form action="{{ route('coordinador.aulas.eliminar', $aula->id_aula) }}" 
+                                                method="POST" 
+                                                class="inline"
+                                                onsubmit="return confirm('¿Estás seguro de eliminar esta aula?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-800">
+                                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                     @empty

@@ -2,45 +2,69 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Horario extends Model
-{
-    use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+{
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
+
     protected $fillable = [
-        'tipo_horario',
+        'nombre',
+        'tipo', // 'semanal' o 'sabado'
+        'dias', // array de días para tipo semanal
         'hora_inicio',
-        'hora_fin'
+        'hora_fin',
+        'activo',
+        'inicio_vigencia',
+        'fin_vigencia'
     ];
 
-    /**
-     * Obtener los grupos asociados a este horario
-     */
-    public function grupos()
+    protected $casts = [
+        'dias' => 'array',
+        'activo' => 'boolean',
+        'inicio_vigencia' => 'date:Y-m-d',
+        'fin_vigencia' => 'date:Y-m-d'
+    ];
+
+    // Tipos permitidos (para validación)
+    public static $tiposPermitidos = ['semanal', 'sabado'];
+
+    protected static function boot()
     {
-        return $this->hasMany(Grupo::class, 'id_horario');
+        parent::boot();
+
+        static::saving(function ($model) {
+            // Validar tipo
+            if (!in_array($model->tipo, self::$tiposPermitidos)) {
+                throw new \Exception("Tipo de horario debe ser: " . implode(', ', self::$tiposPermitidos));
+            }
+
+            // Validar días según tipo
+            if ($model->tipo === 'semanal' && empty($model->dias)) {
+                throw new \Exception("Horario semanal requiere días asignados");
+            }
+
+            if ($model->tipo === 'sabado' && !empty($model->dias)) {
+                throw new \Exception("Horario sabatino no debe tener días asignados");
+            }
+        });
     }
 
-    /**
-     * Accesor para mostrar el horario formateado
-     */
-    public function getHorarioCompletoAttribute()
+    // Métodos útiles
+    public function esSabatino()
     {
-        return "{$this->hora_inicio->format('H:i')} - {$this->hora_fin->format('H:i')} ({$this->tipo_horario})";
+        return $this->tipo === 'sabado';
     }
 
-    /**
-     * Scope para filtrar horarios por tipo
-     */
-    public function scopeTipo($query, $tipo)
+    public function estaActivo()
     {
-        return $query->where('tipo_horario', $tipo);
+        return $this->activo && now()->between(
+            $this->inicio_vigencia, 
+            $this->fin_vigencia
+        );
     }
 }

@@ -77,7 +77,7 @@
                         <span>Listado de Aulas</span>
                     </a>
                     <span class="text-gray-400 mx-2">/</span>
-                    <span class="text-gray-600">Registrar Aula</span>
+                    <span class="text-gray-600">Editar Aula</span>
                 </div>
                 <div class="ml-auto flex items-center">
                     <span class="text-gray-700 font-medium">COORDINADOR ACADÉMICO</span>
@@ -96,10 +96,14 @@
    
                     
                     <!-- Form -->
+
+
                     <div class="p-6 pt-2">
-                    <form action="{{ route('coordinador.aulas.guardar') }}" method="POST">
-                    @csrf <!-- Esto es esencial -->
-                            
+                    <form action="{{ route('coordinador.aulas.actualizar', $aula->id_aula) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+               
+                
                             <!-- Edificio -->
                             <div class="mb-4">
                                 <label for="edificio" class="block text-sm font-medium text-gray-700 mb-1">Edificio</label>
@@ -107,9 +111,8 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <i class="fas fa-building text-gray-400"></i>
                                     </div>
-                                    <input type="text" id="edificio" name="edificio" required placeholder="Ej: A, B, C"
-                                           class="w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 py-2 px-3 border"
-                                           value="">
+                                    <input type="text" id="edificio" name="edificio" value="{{ old('edificio', $aula->edificio) }}" class="w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 py-2 px-3 border">
+                                    
                                 </div>
                              
                                 @error('edificio')
@@ -127,7 +130,7 @@
                                     </div>
                                     <input type="number" id="numero_aula" name="numero_aula" required placeholder="Ej: 101, 202"
                                            class="w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 py-2 px-3 border"
-                                           value="">
+                                           value="{{ old('edificio', $aula->numero_aula) }}">
                                 </div>
                               
                              
@@ -146,7 +149,7 @@
                                     </div>
                                     <input type="number" id="capacidad" name="capacidad" required min="1" max="100" placeholder="Ej: 30"
                                            class="w-full pl-10 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 py-2 px-3 border"
-                                           value="">
+                                           value="{{ old('edificio', $aula->capacidad) }}">
                                 </div>
                            
                                 @error('capacidad')
@@ -184,7 +187,7 @@
                                     <i class="fas fa-arrow-left mr-2"></i> Volver
                                 </a>
                                 <button type="submit" href="" class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md transition-colors text-center">
-                                    <i class="fas fa-save mr-2"></i> Guardar Aula
+                                    <i class="fas fa-save mr-2"></i> Guardar Cambios
                                 </button>
                             </div>
                         </form>
