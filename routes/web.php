@@ -62,17 +62,23 @@ Route::post('/coordinador/registrar-profesor', [AuthController::class, 'register
     ->name('registrar.profesor.post');
 
 
-// Rutas para Grupos
-Route::get('/coordinador/grupos', [GrupoController::class, 'index'])
-->name('coordinador.grupos.index');
+// Grupos
+Route::prefix('coordinador/grupos')->group(function () {
+     Route::get('/', [GrupoController::class, 'index'])->name('coordinador.grupos.index');
+     Route::get('/crear', [GrupoController::class, 'create'])->name('coordinador.grupos.crear');
+     Route::post('/', [GrupoController::class, 'store'])->name('coordinador.grupos.guardar');
+     Route::get('/{id}/editar', [GrupoController::class, 'edit'])->name('coordinador.grupos.edit');
+     Route::put('/{id}', [GrupoController::class, 'update'])->name('coordinador.grupos.update');
+     Route::delete('/{id}', [GrupoController::class, 'destroy'])->name('coordinador.grupos.destroy');
+     
+     // Rutas para eliminados
+     Route::get('/eliminados', [GrupoController::class, 'trashed'])->name('coordinador.grupos.eliminados');
+     Route::patch('/{id}/restaurar', [GrupoController::class, 'restore'])->name('coordinador.grupos.restore');
+     Route::delete('/{id}/forzar-eliminacion', [GrupoController::class, 'forceDelete'])->name('coordinador.grupos.forceDelete');
 
-Route::get('/coordinador/grupos/crear', [GrupoController::class, 'create'])
-->middleware('auth:coordinador')
-->name('coordinador.grupos.crear');
 
-Route::post('/coordinador/grupos', [GrupoController::class, 'store'])
-->middleware('auth:coordinador')
-->name('coordinador.grupos.guardar');
+ });
+
 
 
 // * * *  RUTAS PARA AULAS  *** //
@@ -135,3 +141,5 @@ Route::get('/coordinador/horarios/eliminados', [HorarioController::class, 'elimi
 // Restauración
 Route::patch('/coordinador/horarios/{horario}/restaurar', [HorarioController::class, 'restore'])
 ->name('coordinador.horarios.restaurar');
+
+// Fin de las rutas de horarios

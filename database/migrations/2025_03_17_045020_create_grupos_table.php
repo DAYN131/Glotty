@@ -13,15 +13,19 @@ class CreateGruposTable extends Migration
     {
         Schema::create('grupos', function (Blueprint $table) {
             $table->id();
-            $table->string('nivel_ingles');
-            $table->string('letra_grupo');
-            $table->string('anio');
+            $table->integer('nivel_ingles');
+            $table->string('letra_grupo', 1);
+            $table->integer('anio');
             $table->string('periodo');
             $table->foreignId('id_horario')->constrained('horarios');
             $table->foreignId('id_aula')->constrained('aulas');
-            $table->string('rfc_coordinador')->constrained('coordinadores');
-            $table->string('rfc_profesor')->constrained('profesores');
+            $table->string('rfc_coordinador'); // Sin constrained aquí
+            $table->string('rfc_profesor');    // Sin constrained aquí
+            $table->integer('cupo_minimo')->default(10);
+            $table->integer('cupo_maximo')->default(30);
             $table->timestamps();
+            
+            // Las restricciones se agregarán en la migración fix_grupos_foreign_keys
         });
     }
 

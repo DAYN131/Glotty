@@ -3,16 +3,36 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Grupo extends Model
 {
-    protected $primaryKey = 'id_grupo';
+    use SoftDeletes;
+
+    protected $primaryKey = 'id';
     public $incrementing = false;
     protected $keyType = 'string';
 
+    protected $fillable = [
+        'id',
+        'nivel_ingles',
+        'letra_grupo',
+        'anio',
+        'periodo',
+        'id_horario',
+        'id_aula',
+        'rfc_profesor',
+        'cupo_minimo',
+        'cupo_maximo',
+        'rfc_coordinador'
+    ];
+
+    protected $dates = ['deleted_at'];
+
     public function profesor()
     {
-        return $this->belongsTo(Profesor::class, 'id_profesor', 'rfc_profesor');
+        return $this->belongsTo(Profesor::class, 'rfc_profesor', 'rfc_profesor');
     }
 
     public function aula()
@@ -22,11 +42,6 @@ class Grupo extends Model
 
     public function horario()
     {
-        return $this->belongsTo(Horario::class, 'id_horario', 'id_horario');
-    }
-
-    public function alumnos()
-    {
-        return $this->hasMany(Alumno::class, 'id_grupo', 'id_grupo');
+        return $this->belongsTo(Horario::class, 'id_horario');
     }
 }

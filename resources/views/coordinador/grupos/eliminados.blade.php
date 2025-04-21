@@ -1,9 +1,13 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Grupos - Glotty</title>
+    <title>Grupos Eliminados - Glotty</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script>
@@ -67,7 +71,11 @@
                         <span class="ml-1">Inicio</span>
                     </a>
                     <span class="text-gray-400 mx-2">/</span>
-                    <span class="text-gray-600">Gestión de Grupos</span>
+                    <a href="{{ route('coordinador.grupos.index') }}" class="text-gray-600 hover:text-gray-800">
+                        <span>Gestión de Grupos</span>
+                    </a>
+                    <span class="text-gray-400 mx-2">/</span>
+                    <span class="text-gray-600">Grupos Eliminados</span>
                 </div>
                 <div class="ml-auto flex items-center">
                     <span class="text-gray-700 font-medium">COORDINADOR ACADÉMICO</span>
@@ -76,35 +84,17 @@
             
             <!-- Content Area -->
             <div class="flex-1 p-6 overflow-auto">
-
-                <div class="mb-4">
-                    <a href="{{ route('coordinador.grupos.eliminados') }}" 
-                        class="text-gray-600 hover:text-gray-800 inline-flex items-center">
-                        <i class="fas fa-trash-restore mr-2"></i> Ver horarios eliminados
-                    </a>
-                </div>
                 <!-- Header with buttons -->
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                    <h1 class="text-2xl font-bold text-gray-800 mb-4 md:mb-0">Gestión de Grupos</h1>
+                    <h1 class="text-2xl font-bold text-gray-800 mb-4 md:mb-0">Grupos Eliminados</h1>
                     <div class="flex flex-col sm:flex-row gap-3">
-
-
-                        <a href="{{ route('coordinador.horarios.index') }}" class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md transition-colors text-center flex items-center justify-center">
-                            <i class="fas fa-building mr-2"></i> Gestionar Horarios
-                        </a>
-
-
-                        <a href="{{ route('coordinador.aulas.index') }}" class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md transition-colors text-center flex items-center justify-center">
-                            <i class="fas fa-building mr-2"></i> Gestionar Aulas
-                        </a>
-
-
-                        <a href="{{ route('coordinador.grupos.crear') }}" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition-colors text-center flex items-center justify-center">
-                            <i class="fas fa-plus mr-2"></i> Agregar Grupo
+                        <a href="{{ route('coordinador.grupos.index') }}" class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-md transition-colors text-center flex items-center justify-center">
+                            <i class="fas fa-arrow-left mr-2"></i> Volver a Grupos Activos
                         </a>
                     </div>
                 </div>
                 
+                <!-- Table -->
                 <!-- Table -->
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                     <div class="overflow-x-auto">
@@ -119,66 +109,83 @@
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profesor</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aula</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horario</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alumnos</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Eliminado el</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                                 </tr>
                             </thead>
 
-
-                            
                             <tbody class="bg-white divide-y divide-gray-200">
-    @foreach($grupos as $grupo)
-    <tr class="hover:bg-gray-50">
-        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-            {{ $grupo->id ?? 'N/A' }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            Nivel {{ $grupo->nivel_ingles }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ $grupo->letra_grupo }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ $grupo->anio }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ $grupo->periodo }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ $grupo->profesor->nombre_profesor ?? 'N/A' }} {{ $grupo->profesor->apellidos_profesor ?? '' }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ $grupo->aula->edificio ?? '' }}{{ $grupo->aula->numero_aula ?? 'N/A' }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            @if($grupo->horario)
-                {{ $grupo->horario->nombre }}: 
-                {{ \Carbon\Carbon::parse($grupo->horario->hora_inicio)->format('H:i') }} - 
-                {{ \Carbon\Carbon::parse($grupo->horario->hora_fin)->format('H:i') }}
-            @else
-                N/A
-            @endif
-        </td>
-       
-          <!-- Sidebar --> <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            {{ $grupo->alumnos_count ?? 0 }}
-        </td>   <!-- Sidebar -->
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 space-x-2">
-       
-            <a href="{{ route ('coordinador.grupos.edit',$grupo->id)}}" class="text-blue-500 hover:text-blue-700">
-                <i class="fas fa-edit"></i>
-            </a>
-            <form action="{{ route ('coordinador.grupos.destroy',$grupo->id)}}" method="POST" class="inline">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('¿Estás seguro de eliminar este grupo?')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </form>
-        </td>
-    </tr>
-    @endforeach
-</tbody>
+                                @forelse($grupos as $grupo)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ $grupo->id }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        Nivel {{ $grupo->nivel_ingles }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $grupo->letra_grupo }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $grupo->anio }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $grupo->periodo }}
+                                    </td>
+
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $grupo->profesor->nombre_profesor ?? 'N/A' }} {{ $grupo->profesor->apellidos_profesor ?? '' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $grupo->aula->edificio ?? '' }}{{ $grupo->aula->numero_aula ?? 'N/A' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @if($grupo->horario)
+                                            {{ $grupo->horario->nombre }}: 
+                                            {{ \Carbon\Carbon::parse($grupo->horario->hora_inicio)->format('H:i') }} - 
+                                            {{ \Carbon\Carbon::parse($grupo->horario->hora_fin)->format('H:i') }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+
+
+
+
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $grupo->deleted_at->format('d/m/Y H:i') }}
+                                    </td>
+
+
+
+                                    
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 space-x-2">
+                                        <form action="{{ route('coordinador.grupos.restore', $grupo->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="text-green-600 hover:text-green-800" title="Restaurar grupo">
+                                                <i class="fas fa-trash-restore"></i>
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('coordinador.grupos.forceDelete', $grupo->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-800" 
+                                                    onclick="return confirm('¿Estás seguro de eliminar permanentemente este grupo? Esta acción no se puede deshacer.')"
+                                                    title="Eliminar permanentemente">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
+                                        No hay grupos eliminados
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
                         </table>
                     </div>
                     
@@ -195,42 +202,46 @@
                             </div>
                             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                                 <div>
-                                    <p class="text-sm text-gray-700">
-                                        Mostrando <span class="font-medium">1</span> a <span class="font-medium">5</span> de <span class="font-medium">12</span> resultados
-                                    </p>
+                                    
                                 </div>
-                                <div>
-                                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                            <span class="sr-only">Anterior</span>
-                                            <i class="fas fa-chevron-left"></i>
-                                        </a>
-                                        <a href="#" aria-current="page" class="z-10 bg-primary border-primary text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                            1
-                                        </a>
-                                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                            2
-                                        </a>
-                                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                            3
-                                        </a>
-                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                            <span class="sr-only">Siguiente</span>
-                                            <i class="fas fa-chevron-right"></i>
-                                        </a>
-                                    </nav>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Info Alert -->
+                @if(session('success'))
+                <div class="mt-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md shadow-sm" role="alert">
+                    <p class="font-medium">¡Éxito!</p>
+                    <p>{{ session('success') }}</p>
+                </div>
+                @endif
+
+                @if(session('error'))
+                <div class="mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md shadow-sm" role="alert">
+                    <p class="font-medium">¡Error!</p>
+                    <p>{{ session('error') }}</p>
+                </div>
+                @endif
             </div>
         </div>
     </div>
     
-    <!-- Footer con copyright -->
+    <!-- Footer -->
     <footer class="bg-white text-center py-3 text-gray-600 border-t">
-        &copy; Empresa Datalinker 2025
+        &copy; {{ date('Y') }} Glotty - Sistema de Gestión de Idiomas
     </footer>
+
+    <script>
+        // Confirmación antes de restaurar
+        document.querySelectorAll('form[action*="restore"]').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if(!confirm('¿Estás seguro de restaurar este grupo?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

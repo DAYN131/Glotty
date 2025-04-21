@@ -25,14 +25,17 @@
         <form action="/login" method="POST" class="space-y-4">
             @csrf <!-- Token CSRF para protección -->
 
+
+                 <!-- Mantener el valor ingresado después de un error  -->
             <!-- Campo: Correo Electrónico -->
             <input 
                 type="email" 
                 name="email" 
                 placeholder="Correo Electrónico" 
                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value="{{ old('email') }}" <!-- Mantener el valor ingresado después de un error -->
-            >
+                value="{{ old('email') }}" >
+       
+            
 
             <!-- Campo: Contraseña -->
             <input 
