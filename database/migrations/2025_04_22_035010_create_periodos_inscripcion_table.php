@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inscripciones', function (Blueprint $table) {
+        // database/migrations/..._create_periodos_inscripcion_table.php
+        Schema::create('periodos_inscripcion', function (Blueprint $table) {
             $table->id();
-            $table->string('no_control')->constrained('alumnos');
-            $table->foreignId('id_grupo')->constrained('grupos');
-            $table->date('fecha_inscripcion');
-            $table->enum('estatus_pago', ['Pendiente', 'Pagado', 'Cancelado']);
+            $table->string('nombre')->unique(); // Ej: "2024-1"
+            $table->dateTime('fecha_inicio');
+            $table->dateTime('fecha_fin');
+            $table->boolean('activo')->default(false);
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inscripciones');
+        Schema::dropIfExists('periodos_inscripcion');
     }
 };

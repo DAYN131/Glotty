@@ -6,6 +6,7 @@ use App\Models\Profesor; // Importa el modelo Profesor
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\AlumnoInscripcionController;
 
 Route::get('/', function () {
    return view('login');
@@ -23,7 +24,7 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 // Ruta para procesar el registro de alumnos (POST)
 Route::post('/register', [AuthController::class, 'register']);
 
-// Rutas para la vista del alumno
+// * * *  RUTAS PARA ALUMNOS *** //
 
 //Panel de Control del Alumno
 Route::get('/alumno', function () {
@@ -31,7 +32,36 @@ Route::get('/alumno', function () {
 })->name('alumno.dashboard'); // Asignar un nombre a la ruta
 
 
-// Rutas para la vista del profesor
+// Rutas para inscripciones de alumnos
+Route::middleware('auth:alumno')->prefix('alumno')->group(function() {
+     // Página principal con historial (index.blade.php)
+     Route::get('/inscripciones', [AlumnoInscripcionController::class, 'index'])
+         ->name('alumno.inscripciones.index');
+     
+     // Formulario de nueva inscripción (create.blade.php)
+     Route::get('/inscripciones/crear', [AlumnoInscripcionController::class, 'create'])
+         ->name('alumno.inscripciones.create');
+     
+     // Procesar formulario
+     Route::post('/inscripciones', [AlumnoInscripcionController::class, 'store'])
+         ->name('alumno.inscripciones.store');
+     
+     // Cancelar inscripción pendiente
+     Route::delete('/inscripciones/{inscripcion}', [AlumnoInscripcionController::class, 'destroy'])
+         ->name('alumno.inscripciones.destroy');
+ });
+
+ // Ruta para obtener grupos por nivel via AJAX
+Route::get('/alumno/inscripciones/grupos-por-nivel', [AlumnoInscripcionController::class, 'gruposPorNivel'])
+->middleware('auth:alumno')
+->name('alumno.inscripciones.grupos-por-nivel');
+
+// Ruta para obtener grupos por nivel via AJAX
+Route::get('/alumno/inscripciones/grupos-por-nivel', [AlumnoInscripcionController::class, 'gruposPorNivel'])
+    ->middleware('auth:alumno')
+    ->name('alumno.inscripciones.grupos-por-nivel');
+
+// * * *  RUTAS PARA PROFESORES *** //
 
 //Panel del Profesor
 Route::get('/profesor', function () {
@@ -40,7 +70,8 @@ Route::get('/profesor', function () {
 
 // Rutas para la vista del coordinador
 
-//Panel de Control del Coordinador
+
+// * * *  RUTAS PARA PARA EL COORDINADOR  *** //
 Route::get('/coordinador', function () {
     return view('coordinador');
 })->middleware('auth:coordinador'); // Solo accesible para coordinadores autenticados
@@ -142,4 +173,24 @@ Route::get('/coordinador/horarios/eliminados', [HorarioController::class, 'elimi
 Route::patch('/coordinador/horarios/{horario}/restaurar', [HorarioController::class, 'restore'])
 ->name('coordinador.horarios.restaurar');
 
-// Fin de las rutas de horarios
+
+
+// * * *  RUTAS PARA INSCRIPCIONES  *** //
+
+Route::middleware(['auth', 'role:coordinador'])->prefix('coordinador')->group(function () {
+     // Listado de inscripciones pendientes
+     Route::get('/inscripciones/pendientes', [CoordinadorInscripcionController::class, 'pendientes'])
+          ->name('coordinador.inscripciones.pendientes');
+          
+     // Aprobar inscripción
+     Route::post('/inscripciones/{inscripcion}/aprobar', [CoordinadorInscripcionController::class, 'aprobar'])
+          ->name('coordinador.inscripciones.aprobar');
+          
+     // Rechazar inscripción
+     Route::post('/inscripciones/{inscripcion}/rechazar', [CoordinadorInscripcionController::class, 'rechazar'])
+          ->name('coordinador.inscripciones.rechazar');
+          
+     // Historial completo de inscripciones
+     Route::get('/inscripciones', [CoordinadorInscripcionController::class, 'index'])
+          ->name('coordinador.inscripciones.index');
+ });
