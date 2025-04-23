@@ -32,6 +32,11 @@ class Inscripcion extends Model
         'calificacion_final'
     ];
 
+    protected $casts = [
+        'fecha_inscripcion' => 'datetime',
+        // Otros campos de fecha...
+    ];
+
 
     
     public function alumno()

@@ -204,10 +204,10 @@
                     <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                         <div class="flex items-center mb-4">
                             <i class="fas fa-chart-pie text-primary mr-3 text-xl"></i>
-                            <h3 class="text-lg font-medium text-gray-700">Estadísticas</h3>
+                            <h3 class="text-lg font-medium text-gray-700">Inscripciones</h3>
                         </div>
-                        <p class="text-gray-600 mb-4">Visualiza estadísticas y reportes del rendimiento académico.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
+                        <p class="text-gray-600 mb-4">Aprueba las inscripciones de los alumnos</p>
+                        <a href=" {{route ('coordinador.inscripciones.index')}}" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
                             Acceder <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>

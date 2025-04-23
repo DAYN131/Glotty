@@ -28,92 +28,89 @@
         }
     </script>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col">
-    <div class="flex-1 p-6 max-w-7xl mx-auto">
-        <!-- Encabezado de la página -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Encabezado mejorado -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800 mb-1">Mis Inscripciones</h1>
-                <p class="text-gray-600">Gestiona tus inscripciones a cursos de idiomas</p>
+                <h1 class="text-2xl font-bold text-gray-800">Historial de Inscripciones</h1>
+                <p class="text-gray-600 mt-1">Revisa el estado de tus solicitudes de inscripción</p>
+            </div>
+            <a href="{{ route('alumno.inscripciones.create') }}" 
+               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+                <i class="fas fa-plus-circle mr-2"></i>
+                Nueva Inscripción
+            </a>
+        </div>
+
+        <!-- Tarjetas de resumen mejoradas -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <!-- Tarjeta Total -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 rounded-lg text-blue-600 mr-4">
+                        <i class="fas fa-list-alt"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Total Inscripciones</p>
+                        <p class="text-xl font-semibold">{{ $inscripciones->count() }}</p>
+                    </div>
+                </div>
             </div>
             
-            <div class="mt-4 md:mt-0">
-                <a href="{{ route('alumno.inscripciones.create') }}" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md flex items-center transition-colors">
-                    <i class="fas fa-plus-circle mr-2"></i>
-                    Inscribirse
-                </a>
+            <!-- Tarjeta Aprobadas -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-lg text-green-600 mr-4">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Aprobadas</p>
+                        <p class="text-xl font-semibold">{{ $inscripciones->where('estatus_inscripcion', 'Aprobada')->count() }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta Pendientes -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                <div class="flex items-center">
+                    <div class="p-3 bg-yellow-100 rounded-lg text-yellow-600 mr-4">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Pendientes</p>
+                        <p class="text-xl font-semibold">{{ $inscripciones->where('estatus_inscripcion', 'Pendiente')->count() }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tarjeta Rechazadas/Expiradas -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+                <div class="flex items-center">
+                    <div class="p-3 bg-red-100 rounded-lg text-red-600 mr-4">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">Rechazadas/Expiradas</p>
+                        <p class="text-xl font-semibold">
+                            {{ $inscripciones->whereIn('estatus_inscripcion', ['Rechazada', 'Expirada'])->count() }}
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <!-- Resumen de inscripciones -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 flex items-center">
-                <div class="p-3 bg-blue-100 rounded-full text-blue-600 mr-4">
-                    <i class="fas fa-clipboard-list"></i>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500">Total de inscripciones</p>
-                    <p class="text-xl font-semibold text-gray-800">{{ $inscripciones->count() }}</p>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 flex items-center">
-                <div class="p-3 bg-green-100 rounded-full text-green-600 mr-4">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500">Aprobadas</p>
-                    <p class="text-xl font-semibold text-gray-800">{{ $inscripciones->where('estatus_inscripcion', 'Aprobada')->count() }}</p>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 flex items-center">
-                <div class="p-3 bg-yellow-100 rounded-full text-yellow-600 mr-4">
-                    <i class="fas fa-clock"></i>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500">Pendientes</p>
-                    <p class="text-xl font-semibold text-gray-800">{{ $inscripciones->where('estatus_inscripcion', 'Pendiente')->count() }}</p>
-                </div>
-            </div>
-            
-            <div class="bg-white rounded-lg shadow-sm p-4 border border-gray-200 flex items-center">
-                <div class="p-3 bg-red-100 rounded-full text-red-600 mr-4">
-                    <i class="fas fa-times-circle"></i>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500">Rechazadas</p>
-                    <p class="text-xl font-semibold text-gray-800">{{ $inscripciones->where('estatus_inscripcion', 'Rechazada')->count() }}</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Tabla de inscripciones -->
-        <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
-            <div class="p-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                <h2 class="font-semibold text-gray-700 flex items-center">
-                    <i class="fas fa-history mr-2 text-primary"></i>
-                    Historial de Inscripciones
-                </h2>
-                <div class="flex items-center space-x-2">
-                    <button class="text-gray-500 hover:text-gray-700 p-1">
-                        <i class="fas fa-filter"></i>
-                    </button>
-                    <button class="text-gray-500 hover:text-gray-700 p-1">
-                        <i class="fas fa-download"></i>
-                    </button>
-                </div>
-            </div>
-            
+
+        <!-- Tabla de inscripciones mejorada -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Periodo
+                                Grupo
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Grupo
+                                Periodo
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Nivel
@@ -124,87 +121,92 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Estatus
                             </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Acciones
-                            </th>
+                           
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($inscripciones as $inscripcion)
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-50 transition-colors">
+                  
+
+
+                            <!-- La celda del profesor ya la tienes, pero podemos mejorarla -->
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="font-medium text-gray-900">
+                                {{ $inscripcion->grupo->nivel_ingles }}-{{ $inscripcion->grupo->letra_grupo }}
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">
+                                <i class="fas fa-user-tie mr-1"></i>
+                                {{ $inscripcion->grupo->profesor->nombre_profesor ?? 'Sin asignar' }}  {{ $inscripcion->grupo->profesor->apellidos_profesor ?? 'Sin asignar' }}
+                            </div>
+                           
+                        </td>
+                            
+                            <!-- Celda Periodo -->
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
                                     {{ $inscripcion->periodo }}
                                 </span>
                             </td>
+                            
+                            <!-- Celda Nivel -->
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">
-                                    {{ $inscripcion->grupo->nivel_ingles }}-{{ $inscripcion->grupo->letra_grupo }}
-                                </div>
-                                <div class="text-xs text-gray-500 flex items-center mt-1">
-                                    <i class="fas fa-user-tie mr-1"></i>
-                                    Prof: {{ $inscripcion->grupo->profesor->nombre }}
-                                </div>
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">
+                                    Nivel {{ $inscripcion->nivel_solicitado }}
+                                </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <div class="flex items-center">
-                                    <i class="fas fa-graduation-cap mr-2 text-primary"></i>
-                                    {{ $inscripcion->nivel_solicitado }}
-                                </div>
-                            </td>
+                            
+                            <!-- Celda Horario con más información -->
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 <div class="flex items-center">
                                     <i class="far fa-clock mr-2 text-gray-400"></i>
-                                    {{ $inscripcion->grupo->horario->descripcion }}
+                                    <span class="font-medium">{{ $inscripcion->grupo->horario->nombre ?? 'N/A' }}</span>
                                 </div>
+                                <div class="text-xs text-gray-400 mt-1">
+                                    <span class="mr-2"> Dia(s): {{ $inscripcion->grupo->horario->tipo ?? 'N/A' }}</span>
+                                    
+
+                                </div>
+
+                                <div class="text-xs text-gray-400 mt-1">
+                                  
+                                    <span>{{ $inscripcion->grupo->horario->hora_inicio ?? 'N/A' }} -</span>
+                                    <span>{{ $inscripcion->grupo->horario->hora_fin ?? 'N/A' }}</span>
+
+                                </div>
+                               
+
+
                             </td>
+                            
+                            <!-- Celda Estatus -->
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @if($inscripcion->estatus_inscripcion == 'Aprobada')
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                        <i class="fas fa-check-circle mr-1"></i> Aprobada
-                                    </span>
-                                @elseif($inscripcion->estatus_inscripcion == 'Pendiente')
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                        <i class="fas fa-clock mr-1"></i> Pendiente
-                                    </span>
-                                @elseif($inscripcion->estatus_inscripcion == 'Rechazada')
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                        <i class="fas fa-times-circle mr-1"></i> Rechazada
-                                    </span>
-                                @else
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                        {{ $inscripcion->estatus_inscripcion }}
-                                    </span>
-                                @endif
+                                @php
+                                    $statusClasses = [
+                                        'Aprobada' => ['bg-green-100 text-green-800', 'fa-check-circle'],
+                                        'Pendiente' => ['bg-yellow-100 text-yellow-800', 'fa-clock'],
+                                        'Rechazada' => ['bg-red-100 text-red-800', 'fa-times-circle'],
+                                        'Expirada' => ['bg-gray-100 text-gray-800', 'fa-calendar-times']
+                                    ];
+                                    $currentStatus = $statusClasses[$inscripcion->estatus_inscripcion] ?? ['bg-gray-100 text-gray-800', 'fa-question-circle'];
+                                @endphp
+                                <span class="px-2 py-1 inline-flex items-center text-xs font-medium rounded-full {{ $currentStatus[0] }}">
+                                    <i class="fas {{ $currentStatus[1] }} mr-1"></i>
+                                    {{ $inscripcion->estatus_inscripcion }}
+                                </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                @if($inscripcion->estatus_inscripcion == 'Pendiente')
-                                    <form action="{{ route('alumno.inscripciones.destroy', $inscripcion) }}" method="POST" class="inline-block">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1 rounded-md flex items-center transition-colors" onclick="return confirm('¿Estás seguro de cancelar esta inscripción?')">
-                                            <i class="fas fa-ban mr-1"></i>
-                                            Cancelar
-                                        </button>
-                                    </form>
-                                @elseif($inscripcion->estatus_inscripcion == 'Aprobada')
-                                    <a href="#" class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1 rounded-md flex items-center transition-colors">
-                                        <i class="fas fa-eye mr-1"></i>
-                                        Detalles
-                                    </a>
-                                @else
-                                    <span class="text-gray-400 px-3 py-1">
-                                        <i class="fas fa-minus-circle mr-1"></i>
-                                        N/A
-                                    </span>
-                                @endif
-                            </td>
+                            
+                            
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-gray-500">
-                                <div class="flex flex-col items-center">
-                                    <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-3"></i>
+                            <td colspan="6" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center text-gray-400">
+                                    <i class="fas fa-clipboard-list text-4xl mb-3"></i>
                                     <p>No tienes inscripciones registradas</p>
+                                    <a href="{{ route('alumno.inscripciones.create') }}" class="text-blue-500 hover:text-blue-700 mt-2">
+                                        Realiza tu primera inscripción
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -213,24 +215,20 @@
                 </table>
             </div>
             
-            <!-- Paginación (si es necesaria) -->
-            @if(isset($inscripciones) && method_exists($inscripciones, 'links') && $inscripciones->hasPages())
-            <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                {{ $inscripciones->links() }}
-            </div>
-            @endif
+          
         </div>
-        
-        <!-- Información adicional -->
-        <div class="mt-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-md">
+
+        <!-- Panel informativo -->
+        <div class="mt-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
             <div class="flex">
                 <div class="flex-shrink-0">
                     <i class="fas fa-info-circle text-blue-400"></i>
                 </div>
                 <div class="ml-3">
-                    <p class="text-sm text-blue-700">
-                        Recuerda que puedes cancelar tus inscripciones pendientes, pero una vez aprobadas o rechazadas no podrás modificarlas.
-                    </p>
+                    <h3 class="text-sm font-medium text-blue-800">Información importante</h3>
+                    <div class="mt-2 text-sm text-blue-700">
+                        <p class="mt-1">El coordinador esta a cargo de la aprobacion de tu inscripcion</p>
+                    </div>
                 </div>
             </div>
         </div>

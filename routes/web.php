@@ -7,6 +7,7 @@ use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\AlumnoInscripcionController;
+use App\Http\Controllers\CoordInscripcionController;
 
 Route::get('/', function () {
    return view('login');
@@ -174,23 +175,12 @@ Route::patch('/coordinador/horarios/{horario}/restaurar', [HorarioController::cl
 ->name('coordinador.horarios.restaurar');
 
 
+// Ruta inscripcion?
 
-// * * *  RUTAS PARA INSCRIPCIONES  *** //
-
-Route::middleware(['auth', 'role:coordinador'])->prefix('coordinador')->group(function () {
-     // Listado de inscripciones pendientes
-     Route::get('/inscripciones/pendientes', [CoordinadorInscripcionController::class, 'pendientes'])
-          ->name('coordinador.inscripciones.pendientes');
-          
-     // Aprobar inscripción
-     Route::post('/inscripciones/{inscripcion}/aprobar', [CoordinadorInscripcionController::class, 'aprobar'])
-          ->name('coordinador.inscripciones.aprobar');
-          
-     // Rechazar inscripción
-     Route::post('/inscripciones/{inscripcion}/rechazar', [CoordinadorInscripcionController::class, 'rechazar'])
-          ->name('coordinador.inscripciones.rechazar');
-          
-     // Historial completo de inscripciones
-     Route::get('/inscripciones', [CoordinadorInscripcionController::class, 'index'])
+Route::middleware(['auth:coordinador'])->prefix('coordinador')->group(function() {
+     Route::get('/inscripciones', [CoordInscripcionController::class, 'index'])
           ->name('coordinador.inscripciones.index');
+          
+     Route::patch('/inscripciones/{inscripcion}/aprobar', [CoordInscripcionController::class, 'aprobar'])
+          ->name('coordinador.inscripciones.aprobar');
  });

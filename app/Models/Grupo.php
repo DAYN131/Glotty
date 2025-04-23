@@ -78,4 +78,6 @@ class Grupo extends Model
         
         return $inscritos < $this->cupo_maximo;
     }
+
+    
 }
