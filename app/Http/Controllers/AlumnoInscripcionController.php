@@ -42,17 +42,10 @@ class AlumnoInscripcionController extends Controller{
             'nivelRecomendado' => $nivelRecomendado,
         ]);
     }
-
     public function gruposPorNivel(Request $request)
     {
         try {
             $nivel = $request->query('nivel', 1);
-            
-            if(!is_numeric($nivel)) {
-                return response()->json([
-                    'error' => 'Nivel inválido'
-                ], 400);
-            }
             
             $grupos = $this->obtenerGruposPorNivel($nivel);
             
@@ -71,7 +64,6 @@ class AlumnoInscripcionController extends Controller{
         }
     }
 
-    // Función auxiliar para obtener grupos formateados
     private function obtenerGruposPorNivel($nivel)
     {
         return Grupo::where('nivel_ingles', $nivel)
@@ -85,6 +77,7 @@ class AlumnoInscripcionController extends Controller{
                 return [
                     'id' => $grupo->id,
                     'nombre_grupo' => "Nivel {$grupo->nivel_ingles}-{$grupo->letra_grupo}",
+                    'periodo' => $grupo->periodo, // Asegúrate que este campo existe en la tabla grupos
                     'horario' => $grupo->horario ? 
                         "{$grupo->horario->nombre} ({$grupo->horario->tipo}) {$grupo->horario->hora_inicio} - {$grupo->horario->hora_fin}" : 
                         'Horario no asignado',
@@ -100,38 +93,32 @@ class AlumnoInscripcionController extends Controller{
             ->toArray();
     }
 
-
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'id_grupo' => 'required|exists:grupos,id'
         ]);
-    
+
         $alumno = Auth::guard('alumno')->user();
-        $grupo = Grupo::find($request->id_grupo);
-    
-        // Verificación básica de cupo
-        if($grupo->inscripciones()->count() >= $grupo->cupo_maximo) {
-            return back()->with('error', 'No hay cupo disponible en este grupo');
-        }
-    
-        // Verificar si ya está inscrito en el mismo grupo (opcional)
-        if($alumno->inscripciones()->where('id_grupo', $request->id_grupo)->exists()) {
-            return back()->with('error', 'Ya estás inscrito en este grupo');
-        }
-    
-        // Crear la inscripción simplificada
-        $inscripcion = new Inscripcion([
+        $grupo = Grupo::find($validated['id_grupo']);
+
+        // Solo incluir campos necesarios
+        $inscripcionData = [
             'no_control' => $alumno->no_control,
-            'id_grupo' => $request->id_grupo,
-            'fecha_inscripcion' => now(),
+            'id_grupo' => $validated['id_grupo'],
+            'periodo' => $grupo->periodo,
+            'fecha_inscripcion' => now()->format('Y-m-d'), // Solo fecha sin hora
             'estatus_pago' => 'Pendiente',
-            'estatus_inscripcion' => 'Pendiente'
-        ]);
-        
-        $inscripcion->save();
-    
+            'estatus_inscripcion' => 'Pendiente',
+            'nivel_solicitado' => $alumno->nivelRecomendado()
+        ];
+
+        // Depuración: Verifica los datos antes de insertar
+        \Log::debug('Datos a insertar:', $inscripcionData);
+
+        Inscripcion::create($inscripcionData);
+
         return redirect()->route('alumno.inscripciones.index')
-            ->with('success', 'Solicitud de inscripción enviada');
+            ->with('success', 'Inscripción realizada con éxito');
     }
 }

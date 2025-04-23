@@ -60,16 +60,11 @@ class Alumno extends Authenticatable
     /**
      * Método para obtener el nivel recomendado (simplificado para MVP)
      */
+// En app/Models/Alumno.php
     public function nivelRecomendado()
     {
-        // Para alumnos nuevos, siempre recomendar nivel 1
-        if ($this->es_nuevo) {
-            return 1;
-        }
-        
-        // Para alumnos existentes, usar el nivel_cursado_anterior + 1
-        // (En una versión futura esto se calcularía automáticamente)
-        return $this->nivel_cursado_anterior + 1;
+        // Ejemplo básico - ajusta según tu lógica
+        return $this->ultimo_nivel_aprobado + 1 ?? 1;
     }
 
 

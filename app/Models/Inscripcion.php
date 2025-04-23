@@ -7,15 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 class Inscripcion extends Model
 {
     protected $table = 'inscripciones';
+
+    const ESTATUS_INSCRIPCION = [
+        'Pendiente' => 'Pendiente',
+        'Aprobada' => 'Aprobada', 
+        'Expirada' => 'Expirada'
+    ];
+
+    const ESTATUS_PAGO = [
+        'Pendiente' => 'Pendiente',
+        'Aprobado' => 'Aprobado',
+        'Rechazado' => 'Rechazado'
+    ];
+    
     
     protected $fillable = [
         'no_control',
         'id_grupo',
+        'periodo',
         'fecha_inscripcion',
-        'estatus_pago', // Pendiente/Pagado/Cancelado
-        'estatus_inscripcion', // Pendiente/Aprobado/Rechazado/Baja
-        'calificacion_final' // Opcional para futuro
+        'estatus_pago',
+        'estatus_inscripcion',
+        'nivel_solicitado', // ¡Añade este campo!
+        'calificacion_final'
     ];
+
+
     
     public function alumno()
     {
