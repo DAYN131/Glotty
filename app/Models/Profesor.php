@@ -37,4 +37,9 @@ class Profesor extends Authenticatable // Extiende Authenticatable
     {
         return $this->contraseña; // Indica que la columna "contraseña" es la que almacena la contraseña
     }
+    // app/Models/Profesor.php
+    public function grupos()
+    {
+        return $this->hasMany(Grupo::class, 'rfc_profesor', 'rfc_profesor');
+    }
 }

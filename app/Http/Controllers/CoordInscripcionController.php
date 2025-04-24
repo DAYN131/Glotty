@@ -31,8 +31,8 @@ class CoordInscripcionController extends Controller
             return back()->with('error', 'Solo puedes aprobar inscripciones pendientes');
         }
 
-        // Verificar cupo disponible
-        $cupoDisponible = $inscripcion->grupo->cupo_maximo - $inscripcion->grupo->inscripciones()->where('estatus_inscripcion', 'Aprobada')->count();
+        // Cupo real (solo aprobados) para decisiones de coordinación
+        $cupoDisponible = $inscripcion->grupo->cupoDisponibleReal();
         
         if ($cupoDisponible <= 0) {
             return back()->with('error', 'No hay cupo disponible en este grupo');

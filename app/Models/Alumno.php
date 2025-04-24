@@ -41,30 +41,30 @@ class Alumno extends Authenticatable
         return $this->hasMany(Inscripcion::class, 'no_control', 'no_control');
     }
 
-    /**
-     * Grupos a los que está inscrito el alumno
-     */
-    public function grupos()
-    {
-        return $this->belongsToMany(Grupo::class, 'inscripciones', 'no_control', 'id_grupo')
-                   ->using(Inscripcion::class)
-                   ->withPivot([
-                       'periodo', 
-                       'anio',
-                       'estatus_inscripcion', 
-                       'calificacion_final',
-                       'nivel_solicitado' // Nuevo campo para el MVP
-                   ]);
-    }
 
     /**
      * Método para obtener el nivel recomendado (simplificado para MVP)
      */
-// En app/Models/Alumno.php
+
     public function nivelRecomendado()
     {
         // Ejemplo básico - ajusta según tu lógica
         return $this->ultimo_nivel_aprobado + 1 ?? 1;
+    }
+
+
+   
+       // Relación con grupos a través de inscripciones
+    public function grupos()
+    {
+        return $this->hasManyThrough(
+            Grupo::class,
+            Inscripcion::class,
+            'no_control', // FK en inscripciones
+            'id', // FK en grupos
+            'no_control', // PK en alumnos
+            'id_grupo' // PK en grupos
+        );
     }
 
 

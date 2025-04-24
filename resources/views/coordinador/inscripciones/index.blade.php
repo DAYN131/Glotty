@@ -114,7 +114,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                                    {{ $inscripcion->periodo }}
+                                    {{ $inscripcion->periodo_cursado }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

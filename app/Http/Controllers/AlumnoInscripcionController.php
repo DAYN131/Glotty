@@ -87,38 +87,57 @@ class AlumnoInscripcionController extends Controller{
                     'aula' => $grupo->aula ? 
                         "{$grupo->aula->edificio} - {$grupo->aula->numero_aula}" : 
                         'Aula por asignar',
-                    'cupo_disponible' => $grupo->cupo_maximo - $grupo->inscripciones()->count()
+                    // Cupo teórico (incluye pendientes) para vista alumno
+                   'cupo_disponible' => $grupo->cupoDisponibleParaAlumnos()
                 ];
             })
             ->toArray();
     }
-
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'id_grupo' => 'required|exists:grupos,id'
+            'id_grupo' => 'required|exists:grupos,id',
+            'nivel_seleccionado' => 'required|numeric'
+        ]);
+        
+        $alumno = Auth::guard('alumno')->user();
+        $grupo = Grupo::findOrFail($validated['id_grupo']);
+
+        // Pasa el objeto grupo completo al método
+        $periodoCursado = $this->generarPeriodoCursado($grupo);
+
+        Inscripcion::create([
+            'no_control' => $alumno->no_control,
+            'id_grupo' => $grupo->id,
+            'periodo_cursado' => $periodoCursado,
+            'fecha_inscripcion' => now(),
+            'estatus_inscripcion' => 'Pendiente',
+            'nivel_solicitado' => $validated['nivel_seleccionado']
         ]);
 
-        $alumno = Auth::guard('alumno')->user();
-        $grupo = Grupo::find($validated['id_grupo']);
+        return redirect()->route('alumno.inscripciones.index')
+            ->with('success', 'Inscripción realizada');
+    }
+    
+    protected function generarPeriodoCursado($grupo)
+    {
+        // Obtener el periodo y año directamente del objeto grupo
+        $periodo = $grupo->periodo; // Ej: "Febrero-Junio", "Verano1", etc.
+        $anio = $grupo->anio;       // El año está en un campo separado
 
-        // Solo incluir campos necesarios
-        $inscripcionData = [
-            'no_control' => $alumno->no_control,
-            'id_grupo' => $validated['id_grupo'],
-            'periodo' => $grupo->periodo,
-            'fecha_inscripcion' => now()->format('Y-m-d'), // Solo fecha sin hora
-            'estatus_pago' => 'Pendiente',
-            'estatus_inscripcion' => 'Pendiente',
-            'nivel_solicitado' => $alumno->nivelRecomendado()
+        // Mapeo de periodos a números
+        $periodosNumericos = [
+            'Febrero-Junio' => 1,
+            'Septiembre-Diciembre' => 2,
+            'Verano1' => 3,
+            'Verano2' => 4,
+            'Invierno' => 5
         ];
 
-        // Depuración: Verifica los datos antes de insertar
-        \Log::debug('Datos a insertar:', $inscripcionData);
+        // Obtener el número de periodo (usamos 0 como valor por defecto si no coincide)
+        $numPeriodo = $periodosNumericos[$periodo] ?? 0;
 
-        Inscripcion::create($inscripcionData);
-
-        return redirect()->route('alumno.inscripciones.index')
-            ->with('success', 'Inscripción realizada con éxito');
+        return "{$anio}-{$numPeriodo}";
     }
 }

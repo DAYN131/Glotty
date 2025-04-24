@@ -8,6 +8,7 @@ use App\Http\Controllers\AulaController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\AlumnoInscripcionController;
 use App\Http\Controllers\CoordInscripcionController;
+use App\Http\Controllers\ProfesorController;
 
 Route::get('/', function () {
    return view('login');
@@ -67,9 +68,14 @@ Route::get('/alumno/inscripciones/grupos-por-nivel', [AlumnoInscripcionControlle
 //Panel del Profesor
 Route::get('/profesor', function () {
     return view('profesor');
-});//->middleware('auth:profesor'); // Solo accesible para profesores autenticados
+})->middleware('auth:profesor'); 
 
-// Rutas para la vista del coordinador
+
+Route::middleware('auth:profesor')->prefix('profesor')->group(function() {
+    Route::get('/grupos', [ProfesorController::class, 'misGrupos'])->name('profesor.grupos.index');
+    Route::get('/grupos/{grupo}/alumnos', [ProfesorController::class,'show'])->name('profesor.grupos.alumnos.show');
+    Route::put('/grupos/{grupo}/calificaciones', [ProfesorController::class, 'update'])->name('profesor.calificaciones.update');
+});
 
 
 // * * *  RUTAS PARA PARA EL COORDINADOR  *** //

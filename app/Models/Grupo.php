@@ -53,31 +53,58 @@ class Grupo extends Model
         return $this->hasMany(Inscripcion::class, 'id_grupo', 'id');
     }
 
-    // Relación con alumnos (MANY TO MANY a través de inscripciones)
-    public function alumnos()
-    {
-        return $this->belongsToMany(Alumno::class, 'inscripciones', 'id_grupo', 'no_control')
-                   ->using(Inscripcion::class)
-                   ->withPivot([
-                       'periodo',
-                       'anio',
-                       'fecha_inscripcion',
-                       'estatus_pago',
-                       'estatus_inscripcion',
-                       'calificacion_final' // Agregado para futura expansión
-                   ]);
-    }
+    
 
-    // Método para verificar disponibilidad de cupo
-    public function tieneCupoDisponible($periodo)
-    {
-        $inscritos = $this->inscripciones()
-                         ->where('periodo', $periodo)
-                         ->where('estatus_inscripcion', 'Aprobado')
-                         ->count();
-        
-        return $inscritos < $this->cupo_maximo;
-    }
+
 
     
+
+    // Relación con alumnos a través de inscripciones
+    public function alumnos()
+    {
+     
+                   return $this->hasManyThrough(
+                    Alumno::class,
+                    Inscripcion::class,
+                    'id_grupo', // FK en inscripciones
+                    'no_control', // FK en alumnos
+                    'id', // PK en grupos
+                    'no_control' // PK en alumnos
+                );
+    }
+
+
+
+   
+
+
+    
+   
+    ///
+    /**
+    * Calcula cupo disponible para vista de alumnos (incluye pendientes)
+    * @return int
+    */
+
+   public function cupoDisponibleParaAlumnos(): int
+   {
+       return max(0, $this->cupo_maximo - $this->inscripciones()->count());
+   }
+
+   /**
+    * Calcula cupo real disponible (solo inscripciones aprobadas)
+    * @return int
+    */
+   public function cupoDisponibleReal(): int
+   {
+       return max(0, $this->cupo_maximo - $this->inscripciones()
+           ->where('estatus_inscripcion', 'Aprobada')
+           ->count());
+   }
+
+   public function getPeriodoFormateadoAttribute()
+    {
+        return "{$this->periodo}-{$this->anio}";
+    }
+
 }

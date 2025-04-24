@@ -22,23 +22,25 @@ class Inscripcion extends Model
     
     
     protected $fillable = [
-        'no_control',
-        'id_grupo',
-        'periodo',
-        'fecha_inscripcion',
-        'estatus_pago',
-        'estatus_inscripcion',
-        'nivel_solicitado', // ¡Añade este campo!
-        'calificacion_final'
+    'no_control',
+    'id_grupo',
+    'periodo_cursado',
+    'fecha_inscripcion',
+    'estatus_inscripcion',
+    'calificacion_parcial_1',
+    'calificacion_parcial_2',
+    'calificacion_final',
+    'nivel_solicitado'
     ];
 
     protected $casts = [
         'fecha_inscripcion' => 'datetime',
-        // Otros campos de fecha...
+        'calificacion_parcial_1' => 'decimal:2',
+        'calificacion_parcial_2' => 'decimal:2',
+        'calificacion_final' => 'decimal:2'
     ];
 
-
-    
+        
     public function alumno()
     {
         return $this->belongsTo(Alumno::class, 'no_control', 'no_control');
@@ -48,4 +50,14 @@ class Inscripcion extends Model
     {
         return $this->belongsTo(Grupo::class, 'id_grupo');
     }
+
+    public function calculateFinalGrade()
+    {
+        if (!is_null($this->calificacion_parcial_1) && !is_null($this->calificacion_parcial_2)) {
+            $this->calificacion_final = ($this->calificacion_parcial_1 + $this->calificacion_parcial_2) / 2;
+            $this->save();
+        }
+    }
+
+
 }
