@@ -34,6 +34,7 @@ Route::get('/alumno', function () {
 })->name('alumno.dashboard'); // Asignar un nombre a la ruta
 
 
+
 // Rutas para inscripciones de alumnos
 Route::middleware('auth:alumno')->prefix('alumno')->group(function() {
      // Página principal con historial (index.blade.php)
@@ -62,6 +63,10 @@ Route::get('/alumno/inscripciones/grupos-por-nivel', [AlumnoInscripcionControlle
 Route::get('/alumno/inscripciones/grupos-por-nivel', [AlumnoInscripcionController::class, 'gruposPorNivel'])
     ->middleware('auth:alumno')
     ->name('alumno.inscripciones.grupos-por-nivel');
+
+Route::middleware('auth:alumno')->group(function() {
+        Route::get('/alumno/calificaciones', [AlumnoInscripcionController::class, 'verCalificaciones'])->name('alumno.calificaciones.index');
+});
 
 // * * *  RUTAS PARA PROFESORES *** //
 
@@ -190,3 +195,4 @@ Route::middleware(['auth:coordinador'])->prefix('coordinador')->group(function()
      Route::patch('/inscripciones/{inscripcion}/aprobar', [CoordInscripcionController::class, 'aprobar'])
           ->name('coordinador.inscripciones.aprobar');
  });
+

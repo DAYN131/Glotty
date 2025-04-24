@@ -129,7 +129,7 @@ class AlumnoInscripcionController extends Controller{
         // Mapeo de periodos a números
         $periodosNumericos = [
             'Febrero-Junio' => 1,
-            'Septiembre-Diciembre' => 2,
+            'Septiembre-Noviembre' => 2,
             'Verano1' => 3,
             'Verano2' => 4,
             'Invierno' => 5
@@ -140,4 +140,32 @@ class AlumnoInscripcionController extends Controller{
 
         return "{$anio}-{$numPeriodo}";
     }
+
+    public function verCalificaciones()
+    {
+        $alumno = Auth::guard('alumno')->user();
+        
+        if (!$alumno) {
+            return redirect()->route('login')->withErrors(['error' => 'Debes iniciar sesión como alumno']);
+        }
+    
+        $inscripciones = $alumno->inscripciones()
+            ->with([
+                'grupo.horario',
+                'grupo.profesor',
+                'grupo.aula'
+            ])
+            ->select([
+                'id', // Asegúrate de incluir la PK
+                'calificacion_parcial_1',
+                'calificacion_parcial_2',
+                'calificacion_final',
+                'id_grupo' // Clave foránea necesaria para la relación
+            ])
+            ->latest('fecha_inscripcion')
+            ->get();
+                
+        return view('alumno.calificaciones.index', compact('inscripciones'));
+    }
+    
 }

@@ -128,8 +128,21 @@
                 <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="col-span-2">
-                            <div class="text-sm text-gray-500">Número de control: 22590336</div>
-                            <h2 class="text-xl font-bold text-gray-800 mb-1">JUAN PÉREZ GARCÍA</h2>
+                            <div class="text-sm text-gray-500"></div>
+                            
+                            <!-- Mostrar nombre completo -->
+                            <span class="text-gray-700 font-medium">{{ session('user_name') }}</span>
+
+                            <!-- Mostrar iniciales -->
+                            <div class="user-avatar rounded-full w-8 h-8 flex items-center justify-center text-white">
+                                {{ session('user_initials') }}
+                            </div>
+
+                            <!-- Mostrar mensaje personalizado -->
+                            <h1 class="text-2xl font-bold">Bienvenido, {{ explode(' ', session('user_name'))[0] }}!</h1>
+
+
+
                             <div class="text-gray-600 mb-3">Ingeniería en Sistemas Computacionales</div>
                             
                             <div class="grid grid-cols-2 gap-2 text-sm">
@@ -180,7 +193,7 @@
                             <h3 class="text-lg font-medium text-gray-700">Calificaciones Actuales</h3>
                         </div>
                         <p class="text-gray-600 mb-4">Revisa tus calificaciones del semestre en curso.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
+                        <a href="{{ route('alumno.calificaciones.index') }}" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
                             Acceder <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
