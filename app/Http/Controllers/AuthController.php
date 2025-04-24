@@ -77,71 +77,56 @@ class AuthController extends Controller
                 return redirect()->back()->withErrors(['error' => 'Hubo un problema al registrar el profesor. Error: ' . $e->getMessage()]);
         }
     }
-
     public function login(Request $request)
     {
-    // Validar los datos del formulario
-    $request->validate([
-        'email' => 'required|string|email',
-        'password' => 'required|string',
-        'role' => 'required|in:alumno,profesor,coordinador', // Asegurar que el rol sea válido
-    ]);
-
-    // Determinar el guard y la columna de correo según el rol
-    switch ($request->role) {
-        case 'alumno':
-            $guard = 'alumno';
-            $emailColumn = 'correo_institucional'; // Columna correcta para alumnos
-            $redirect = '/alumno';
-            break;
-        case 'profesor':
-            $guard = 'profesor';
-            $emailColumn = 'correo_profesor'; // Columna correcta para profesores
-            $redirect = '/profesor';
-            break;
-        case 'coordinador':
-            $guard = 'coordinador';
-            $emailColumn = 'correo_coordinador'; // Columna correcta para coordinadores
-            $redirect = '/coordinador';
-            break;
-        default:
-            return back()->withErrors(['role' => 'Rol no válido']);
-    }
-
-    // Depuración: Imprimir los datos recibidos
-    \Log::info('Intentando autenticar:', [
-        'email' => $request->email,
-        'password' => $request->password,
-        'role' => $request->role,
-        'guard' => $guard,
-        'emailColumn' => $emailColumn,
-    ]);
-
-    // Intentar autenticar al usuario
-    if (Auth::guard($guard)->attempt([$emailColumn => $request->email, 'password' => $request->password])) {
-        \Log::info('Autenticación exitosa para el rol: ' . $request->role);
-
-        // Depuración: Verificar si el usuario está autenticado
-        if (Auth::guard($guard)->check()) {
-            \Log::info('Usuario autenticado correctamente en el guard: ' . $guard);
-        } else {
-            \Log::error('El usuario no está autenticado en el guard: ' . $guard);
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+            'role' => 'required|in:alumno,profesor,coordinador',
+        ]);
+    
+        $guard = $request->role;
+        $emailColumn = [
+            'alumno' => 'correo_institucional',
+            'profesor' => 'correo_profesor',
+            'coordinador' => 'correo_coordinador'
+        ][$guard];
+    
+        if (Auth::guard($guard)->attempt([$emailColumn => $request->email, 'password' => $request->password])) {
+            
+            $user = Auth::guard($guard)->user();
+            
+            // Datos comunes para todos los usuarios
+            $userData = [
+                'user_role' => $guard,
+                'user_email' => $request->email
+            ];
+    
+            // Datos específicos por tipo de usuario
+            switch ($guard) {
+                case 'alumno':
+                    $userData['user_fullname'] = $user->nombre_alumno . ' ' . $user->apellidos_alumno;
+                    $userData['user_identifier'] = $user->no_control;
+                    break;
+                    
+                case 'profesor':
+                    $userData['user_fullname'] = $user->nombre_profesor . ' ' . $user->apellidos_profesor;
+                    $userData['user_identifier'] = $user->rfc_profesor;
+                    break;
+                    
+                case 'coordinador':
+                    $userData['user_fullname'] = $user->nombre_coordinador . ' ' . $user->apellidos_coordinador;
+                    $userData['user_identifier'] = $user->rfc_coordinador;
+                    break;
+            }
+    
+            session($userData);
+    
+            return redirect()->intended("/$guard");
         }
-
-        // Depuración: Verificar la URL de redirección
-        \Log::info('Redirigiendo a: ' . $redirect);
-
-        // Redirigir a la ruta correspondiente
-        return redirect()->intended($redirect);
+    
+        return back()->withErrors(['email' => 'Credenciales incorrectas']);
     }
-
-    // Depuración: Imprimir el error de autenticación
-    \Log::error('Error de autenticación para el rol: ' . $request->role);
-
-    // Si la autenticación falla, regresar con un mensaje de error
-    return back()->withErrors(['email' => 'Credenciales incorrectas']);
-    }
-
     // Método para cerrar sesión
     public function logout()
     {

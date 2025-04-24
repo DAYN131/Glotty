@@ -68,61 +68,11 @@
                     </a>
                 </div>
                 <div class="ml-auto flex items-center">
-                    <span class="text-gray-700 font-medium">JUAN PÉREZ GARCÍA</span>
+                    <span class="text-gray-700 font-medium">ALUMNO</span>
                 </div>
             </header>
             
-            <!-- Content Area -->
-            <div class="flex-1 p-6 overflow-auto">
-                <!-- Panel Principal Section -->
-                <div class="mb-8">
-                    <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                        <h2 class="text-lg font-medium text-gray-700 mb-4 border-b pb-2">Panel Principal</h2>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                            <!-- Estadísticas -->
-                            <div class="bg-blue-100 rounded-lg p-4 flex">
-                                <div class="p-2 bg-blue-500 rounded text-white mr-4">
-                                    <i class="fas fa-graduation-cap"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm text-gray-600">Créditos acumulados</div>
-                                    <div class="font-bold text-xl">138</div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-red-100 rounded-lg p-4 flex">
-                                <div class="p-2 bg-red-500 rounded text-white mr-4">
-                                    <i class="fas fa-times-circle"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm text-gray-600">Materias reprobadas</div>
-                                    <div class="font-bold text-xl">0</div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-green-100 rounded-lg p-4 flex">
-                                <div class="p-2 bg-green-500 rounded text-white mr-4">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm text-gray-600">Materias aprobadas</div>
-                                    <div class="font-bold text-xl">30</div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-yellow-100 rounded-lg p-4 flex">
-                                <div class="p-2 bg-yellow-500 rounded text-white mr-4">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div>
-                                    <div class="text-sm text-gray-600">Promedio general</div>
-                                    <div class="font-bold text-xl">95.300</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            
                 
                 <!-- Información del Estudiante -->
                 <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
@@ -130,60 +80,36 @@
                         <div class="col-span-2">
                             <div class="text-sm text-gray-500"></div>
                             
-                            <!-- Mostrar nombre completo -->
-                            <span class="text-gray-700 font-medium">{{ session('user_name') }}</span>
-
-                            <!-- Mostrar iniciales -->
-                            <div class="user-avatar rounded-full w-8 h-8 flex items-center justify-center text-white">
-                                {{ session('user_initials') }}
-                            </div>
-
-                            <!-- Mostrar mensaje personalizado -->
-                            <h1 class="text-2xl font-bold">Bienvenido, {{ explode(' ', session('user_name'))[0] }}!</h1>
-
-
-
-                            <div class="text-gray-600 mb-3">Ingeniería en Sistemas Computacionales</div>
+                           <!-- En la información del estudiante -->
+                           <h2 class="text-xl font-bold text-gray-800 mb-1"> Bienvenido {{ $nombre_completo }}</h2>
+                        
+                            <div class="text-sm text-gray-500">Número de control: {{ $identificador }}</div>
+                   
                             
                             <div class="grid grid-cols-2 gap-2 text-sm">
-                                <div class="flex items-center">
-                                    <i class="fas fa-calendar-alt text-gray-400 mr-2"></i>
-                                    <span>Semestre: 6</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-users text-gray-400 mr-2"></i>
-                                    <span>Grupo: A</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-building text-gray-400 mr-2"></i>
-                                    <span>Sede: Principal</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-info-circle text-gray-400 mr-2"></i>
-                                    <span>Estatus: Vigente Reinscrito</span>
-                                </div>
+                                
                             </div>
                         </div>
-                        <div class="flex justify-center">
-                            <div class="w-32 h-40 bg-gray-200 rounded-lg overflow-hidden">
-                                <img src="/placeholder.svg?height=160&width=128" alt="Foto del estudiante" class="w-full h-full object-cover" />
-                            </div>
-                        </div>
+                       
                     </div>
                 </div>
+
+                
                 
                 <!-- Main Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Historial de Cursos -->
+                    
+
+                    <!-- Inscripción -->
                     <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-history text-primary mr-3 text-xl"></i>
-                            <h3 class="text-lg font-medium text-gray-700">Historial de Cursos</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Consulta tu historial académico y materias aprobadas.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
-                            Acceder <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-edit text-primary mr-3 text-xl"></i>
+                                <h3 class="text-lg font-medium text-gray-700">Inscripción</h3>
+                            </div>
+                            <p class="text-gray-600 mb-4">Realiza tu proceso de inscripción para el próximo semestre.</p>
+                            <a href="{{ route('alumno.inscripciones.index') }}" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
+                                Acceder <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
                     </div>
                     
                     <!-- Calificaciones Actuales -->
@@ -198,29 +124,9 @@
                         </a>
                     </div>
                     
-                    <!-- Inscripción -->
-                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-edit text-primary mr-3 text-xl"></i>
-                            <h3 class="text-lg font-medium text-gray-700">Inscripción</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Realiza tu proceso de inscripción para el próximo semestre.</p>
-                        <a href="{{ route('alumno.inscripciones.index') }}" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
-                            Acceder <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                    </div>
                     
-                    <!-- Datos Personales -->
-                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-user-cog text-primary mr-3 text-xl"></i>
-                            <h3 class="text-lg font-medium text-gray-700">Datos Personales</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Actualiza tu información personal y datos de contacto.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
-                            Acceder <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                    </div>
+                    
+                   
                     
                     <!-- Constancia de Finalización -->
                     <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -233,54 +139,7 @@
                             Descargar <i class="fas fa-download ml-1"></i>
                         </a>
                     </div>
-                    
-                    <!-- Horario -->
-                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-calendar-alt text-primary mr-3 text-xl"></i>
-                            <h3 class="text-lg font-medium text-gray-700">Horario</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Consulta tu horario de clases del semestre actual.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
-                            Acceder <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                    </div>
-                    
-                    <!-- Kardex -->
-                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-clipboard-list text-primary mr-3 text-xl"></i>
-                            <h3 class="text-lg font-medium text-gray-700">Kardex</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Consulta tu historial académico completo.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
-                            Acceder <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                    </div>
-                    
-                    <!-- Pagos -->
-                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-money-bill-wave text-primary mr-3 text-xl"></i>
-                            <h3 class="text-lg font-medium text-gray-700">Pagos</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Consulta el estado de tus pagos y colegiaturas.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
-                            Acceder <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                    </div>
-                    
-                    <!-- Documentos -->
-                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-folder-open text-primary mr-3 text-xl"></i>
-                            <h3 class="text-lg font-medium text-gray-700">Documentos</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Sube y gestiona tus documentos digitales.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
-                            Acceder <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                    </div>
+                                      
                 </div>
             </div>
         </div>

@@ -26,12 +26,32 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 // Ruta para procesar el registro de alumnos (POST)
 Route::post('/register', [AuthController::class, 'register']);
 
-// * * *  RUTAS PARA ALUMNOS *** //
+// * * *  RUTAS PARA DASHBOARDS *** //
 
-//Panel de Control del Alumno
+
+// Ruta del dashboard del alumno
 Route::get('/alumno', function () {
-    return view('alumno');
-})->name('alumno.dashboard'); // Asignar un nombre a la ruta
+    return view('alumno', [
+        'nombre_completo' => session('user_fullname'),
+        'identificador' => session('user_identifier')
+    ]);
+})->name('alumno.dashboard')->middleware('auth:alumno');
+
+// Ruta del dashboard del profesor
+Route::get('/profesor', function () {
+    return view('profesor', [
+        'nombre_completo' => session('user_fullname'),
+        'rfc_profesor' => session('user_identifier')
+    ]);
+})->middleware('auth:profesor');
+
+// Ruta del dashboard del coordinador
+Route::get('/coordinador', function () {
+    return view('coordinador', [
+        'nombre_completo' => session('user_fullname'),
+        'rfc_coordinador' => session('user_identifier')
+    ]);
+})->middleware('auth:coordinador');
 
 
 
@@ -70,10 +90,6 @@ Route::middleware('auth:alumno')->group(function() {
 
 // * * *  RUTAS PARA PROFESORES *** //
 
-//Panel del Profesor
-Route::get('/profesor', function () {
-    return view('profesor');
-})->middleware('auth:profesor'); 
 
 
 Route::middleware('auth:profesor')->prefix('profesor')->group(function() {
@@ -83,10 +99,6 @@ Route::middleware('auth:profesor')->prefix('profesor')->group(function() {
 });
 
 
-// * * *  RUTAS PARA PARA EL COORDINADOR  *** //
-Route::get('/coordinador', function () {
-    return view('coordinador');
-})->middleware('auth:coordinador'); // Solo accesible para coordinadores autenticados
 
 // Ruta para obtener todos los profesores
 Route::get('/coordinador/profesores', function () {

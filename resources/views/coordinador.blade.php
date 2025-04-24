@@ -123,21 +123,46 @@
                         </div>
                     </div>
                 </div>
+
+
+                 <!-- Información del Profesor -->
+                 <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="col-span-2">
+                            <div class="text-sm text-gray-500"></div>
+                            
+                         
+                           <h2 class="text-xl font-bold text-gray-800 mb-1"> Bienvenido {{ $nombre_completo }}</h2>
+                        
+                            <div class="text-sm text-gray-500">RFC: {{ $rfc_coordinador }}</div>
+                   
+                            
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
                 
                 <!-- Main Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Alumnos -->
+
+
+
+                         
+                    <!-- Inscripciones -->
                     <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                         <div class="flex items-center mb-4">
-                            <i class="fas fa-user-graduate text-primary mr-3 text-xl"></i>
-                            <h3 class="text-lg font-medium text-gray-700">Alumnos</h3>
+                            <i class="fas fa-chart-pie text-primary mr-3 text-xl"></i>
+                            <h3 class="text-lg font-medium text-gray-700">Inscripciones</h3>
                         </div>
-                        <p class="text-gray-600 mb-4">Administra la información de los alumnos registrados en el sistema.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
+                        <p class="text-gray-600 mb-4">Aprueba las inscripciones de los alumnos</p>
+                        <a href=" {{route ('coordinador.inscripciones.index')}}" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
                             Acceder <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
-                    
+
                     <!-- Grupos -->
                     <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
                         <div class="flex items-center mb-4">
@@ -162,6 +187,20 @@
                             Acceder <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
+
+                    <!-- Alumnos -->
+                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-user-graduate text-primary mr-3 text-xl"></i>
+                            <h3 class="text-lg font-medium text-gray-700">Alumnos</h3>
+                        </div>
+                        <p class="text-gray-600 mb-4">Administra la información de los alumnos registrados en el sistema.</p>
+                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
+                            Acceder <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                    
+                    
                     
                     
                     <!-- Horarios -->
@@ -199,18 +238,7 @@
                             Acceder <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
-                    
-                    <!-- Estadísticas -->
-                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-chart-pie text-primary mr-3 text-xl"></i>
-                            <h3 class="text-lg font-medium text-gray-700">Inscripciones</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Aprueba las inscripciones de los alumnos</p>
-                        <a href=" {{route ('coordinador.inscripciones.index')}}" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
-                            Acceder <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                    </div>
+           
                 </div>
             </div>
         </div>
