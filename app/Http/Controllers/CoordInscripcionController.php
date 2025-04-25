@@ -46,4 +46,19 @@ class CoordInscripcionController extends Controller
 
         return back()->with('success', 'Inscripción aprobada correctamente');
     }
+
+    public function inscripcionesAprobadas()
+    {
+        $inscripciones = Inscripcion::with([
+                'alumno', 
+                'grupo',
+            ])
+            ->where('estatus_inscripcion', 'Aprobada')
+            ->latest()
+            ->get();
+
+        return view('coordinador.inscripciones.aprobadas', compact('inscripciones'));
+    }
+
+
 }

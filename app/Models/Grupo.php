@@ -54,11 +54,6 @@ class Grupo extends Model
     }
 
     
-
-
-
-    
-
     // Relación con alumnos a través de inscripciones
     public function alumnos()
     {
@@ -72,14 +67,6 @@ class Grupo extends Model
                     'no_control' // PK en alumnos
                 );
     }
-
-
-
-   
-
-
-    
-   
     ///
     /**
     * Calcula cupo disponible para vista de alumnos (incluye pendientes)
@@ -107,4 +94,11 @@ class Grupo extends Model
         return "{$this->periodo}-{$this->anio}";
     }
 
+    // En el modelo Grupo.php
+    public function tieneAlumnosInscritos(): bool
+    {
+        return $this->inscripciones()
+                    ->where('estatus_inscripcion', 'Aprobada')
+                    ->exists();
+    }
 }

@@ -74,13 +74,25 @@
                 </div>
             </header>
             
+            @if(session('success'))
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mx-6 mb-6" role="alert">
+                    <p>{{ session('success') }}</p>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mx-6 mb-6" role="alert">
+                    <p>{{ session('error') }}</p>
+                </div>
+            @endif
+
             <!-- Content Area -->
             <div class="flex-1 p-6 overflow-auto">
 
                 <div class="mb-4">
                     <a href="{{ route('coordinador.grupos.eliminados') }}" 
                         class="text-gray-600 hover:text-gray-800 inline-flex items-center">
-                        <i class="fas fa-trash-restore mr-2"></i> Ver horarios eliminados
+                        <i class="fas fa-trash-restore mr-2"></i> Ver grupos eliminados
                     </a>
                 </div>
                 <!-- Header with buttons -->
@@ -168,10 +180,11 @@
             <a href="{{ route ('coordinador.grupos.edit',$grupo->id)}}" class="text-blue-500 hover:text-blue-700">
                 <i class="fas fa-edit"></i>
             </a>
-            <form action="{{ route ('coordinador.grupos.destroy',$grupo->id)}}" method="POST" class="inline">
+           <form action="{{ route('coordinador.grupos.destroy',$grupo->id)}}" method="POST" class="inline">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="text-red-500 hover:text-red-700" onclick="return confirm('¿Estás seguro de eliminar este grupo?')">
+                <button type="submit" class="text-red-500 hover:text-red-700" 
+                    onclick="return confirm('¿Estás seguro de eliminar este grupo?\n\n{{ $grupo->alumnos_count > 0 ? 'ADVERTENCIA: Este grupo tiene alumnos inscritos y no podrá ser eliminado' : '' }}')">
                     <i class="fas fa-trash"></i>
                 </button>
             </form>

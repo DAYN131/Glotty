@@ -198,7 +198,7 @@ Route::patch('/coordinador/horarios/{horario}/restaurar', [HorarioController::cl
 ->name('coordinador.horarios.restaurar');
 
 
-// Ruta inscripcion?
+// * * *  RUTAS PARA INSCRIPCIONES *** //
 
 Route::middleware(['auth:coordinador'])->prefix('coordinador')->group(function() {
      Route::get('/inscripciones', [CoordInscripcionController::class, 'index'])
@@ -206,5 +206,11 @@ Route::middleware(['auth:coordinador'])->prefix('coordinador')->group(function()
           
      Route::patch('/inscripciones/{inscripcion}/aprobar', [CoordInscripcionController::class, 'aprobar'])
           ->name('coordinador.inscripciones.aprobar');
+
+    Route::get('/inscripciones/aprobadas', [CoordInscripcionController::class, 'inscripcionesAprobadas'])
+    ->name('coordinador.inscripciones.aprobadas');
+
+
  });
+
 

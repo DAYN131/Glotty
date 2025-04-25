@@ -195,7 +195,7 @@
                             <h3 class="text-lg font-medium text-gray-700">Alumnos</h3>
                         </div>
                         <p class="text-gray-600 mb-4">Administra la información de los alumnos registrados en el sistema.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
+                        <a href="{{route ('coordinador.inscripciones.aprobadas')}}" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
                             Acceder <i class="fas fa-arrow-right ml-1"></i>
                         </a>
                     </div>
@@ -215,17 +215,7 @@
                         </a>
                     </div>
                     
-                    <!-- Calificaciones -->
-                    <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-graduation-cap text-primary mr-3 text-xl"></i>
-                            <h3 class="text-lg font-medium text-gray-700">Calificaciones</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Revisa y gestiona el registro de calificaciones de los alumnos.</p>
-                        <a href="#" class="block w-full bg-primary hover:bg-primary-dark text-white py-2 rounded-md transition-colors text-center">
-                            Acceder <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                    </div>
+                  
                     
                     <!-- Documentos -->
                     <div class="bg-white p-5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
