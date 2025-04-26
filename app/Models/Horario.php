@@ -23,11 +23,20 @@ class Horario extends Model
         'fin_vigencia'
     ];
 
+    #protected $casts = [
+        #'dias' => 'array',
+        #'activo' => 'boolean',
+        #'inicio_vigencia' => 'date:Y-m-d',
+        #'fin_vigencia' => 'date:Y-m-d'
+    #];
+
     protected $casts = [
-        'dias' => 'array',
         'activo' => 'boolean',
-        'inicio_vigencia' => 'date:Y-m-d',
-        'fin_vigencia' => 'date:Y-m-d'
+        'dias' => 'array', // Para convertir automáticamente el JSON
+        'hora_inicio' => 'datetime:H:i',
+        'hora_fin' => 'datetime:H:i',
+        'inicio_vigencia' => 'date',
+        'fin_vigencia' => 'date'
     ];
 
     // Tipos permitidos (para validación)

@@ -17,7 +17,7 @@ class ProfesorController extends Controller
         
         $grupos = $profesor->grupos()
             ->with(['horario' => function($query) {
-                $query->select('id', 'nombre','hora_inicio','hora_fin'); // Asegurar que horario devuelve string
+                $query->select('id', 'nombre', 'tipo', 'dias', 'hora_inicio', 'hora_fin'); // Añadir 'tipo' y 'dias'
             }])
             ->with(['aula' => function($query) {
                 $query->select('id_aula', 'edificio', 'numero_aula');
@@ -26,7 +26,7 @@ class ProfesorController extends Controller
                 $query->where('inscripciones.estatus_inscripcion', 'Aprobada');
             }])
             ->get();
-    
+
         return view('profesor.grupos.index', compact('grupos'));
     }
 

@@ -51,7 +51,7 @@ class HorarioController extends Controller
         try {
             // Si es sabatino, forzar días a null
             if ($validated['tipo'] === 'sabado') {
-                $validated['dias'] = null;
+                $validated['dias'] = "sabado";
             }
 
             // Si se marca como activo, desactivar otros horarios del mismo tipo
@@ -130,8 +130,6 @@ class HorarioController extends Controller
 
 
 
-   
-    
 }
 
 

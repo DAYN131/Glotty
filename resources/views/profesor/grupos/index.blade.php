@@ -58,7 +58,8 @@
             <div class="mt-4 md:mt-0 flex items-center space-x-4">
                 <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 flex items-center">
                     <i class="fas fa-calendar-alt text-primary mr-2"></i>
-                    <span class="text-gray-700">Periodo: {{ $periodoActual ?? 'Actual' }}</span>
+                    <span class="text-gray-700">Periodo: {{ $grupo->periodo ?? 'Actual' }}</span>
+                    
                 </div>
                 
                 <a href="#" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg flex items-center transition-colors shadow-sm">
@@ -136,16 +137,27 @@
                         </span>
                     </div>
                     
-                    <div class="mt-4 flex items-center text-sm">
-                        <div class="flex items-center mr-4">
-                            <i class="fas fa-calendar-day mr-1"></i>
-                            <span>{{ $grupo->horario->nombre ?? 'Lun-Vie' }}</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-clock mr-1"></i>
-                            <span>{{ $grupo->horario->hora_inicio }} - {{ $grupo->horario->hora_fin }}</span>
-                        </div>
-                    </div>
+    @if($grupo->horario)
+    <div class="horario-info">
+        @if($grupo->horario->tipo == 'sabado')
+            <span>Sábados</span>
+        @else
+            <span>
+                @if(!empty($grupo->horario->dias))
+                    {{ implode(', ', array_map('ucfirst', (array)$grupo->horario->dias)) }}
+                @else
+                    Días no definidos
+                @endif
+            </span>
+        @endif
+        <div class="horas">
+            {{ $grupo->horario->hora_inicio->format('H:i') }} - 
+            {{ $grupo->horario->hora_fin->format('H:i') }}
+        </div>
+    </div>
+@else
+    <span class="text-warning">Sin horario asignado</span>
+@endif
                 </div>
                 
                 <div class="p-5">

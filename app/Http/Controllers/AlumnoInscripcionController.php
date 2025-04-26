@@ -28,12 +28,20 @@ class AlumnoInscripcionController extends Controller{
     public function create()
     {
         $alumno = Auth::guard('alumno')->user();
-        if (!$alumno) {
-            return redirect()->route('login')->withErrors(['error' => 'Debes iniciar sesión como alumno']);
+        if (!$alumno) return redirect()->route('login');
+
+        // Verificar inscripción activa (pendiente o aprobada en cualquier grupo)
+        $inscripcionActiva = Inscripcion::where('no_control', $alumno->no_control)
+        ->whereIn('estatus_inscripcion', ['Pendiente', 'Aprobada'])
+        ->exists();
+
+        if ($inscripcionActiva) {
+        return redirect()->route('alumno.inscripciones.index')
+            ->with('error', 'Ya tienes una inscripción activa (pendiente o aprobada). No puedes inscribirte a otro grupo hasta que se resuelva.');
         }
 
         $nivelRecomendado = $alumno->nivelRecomendado();
-        
+            
         // Obtener grupos del nivel recomendado inicialmente
         $gruposDisponibles = $this->obtenerGruposPorNivel($nivelRecomendado);
 
@@ -42,6 +50,9 @@ class AlumnoInscripcionController extends Controller{
             'nivelRecomendado' => $nivelRecomendado,
         ]);
     }
+
+
+
     public function gruposPorNivel(Request $request)
     {
         try {

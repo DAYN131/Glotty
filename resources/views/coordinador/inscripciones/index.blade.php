@@ -100,18 +100,28 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm">
-                                    {{ $inscripcion->grupo->horario->nombre }}
-                                </div>
-                                <div class="text-xs text-gray-500">
-                                    <i class="fas fa-clock mr-1"></i>
-                                    {{ $inscripcion->grupo->horario->hora_inicio }} - {{ $inscripcion->grupo->horario->hora_fin }}
-                                </div>
-                                <div class="text-xs text-gray-500">
-                                    <i class="fas fa-calendar-day mr-1"></i>
-                                    {{ $inscripcion->grupo->horario->tipo }}
-                                </div>
-                            </td>
+    @if($inscripcion->grupo->horario)
+        <div class="horario-info">
+            @if($inscripcion->grupo->horario->tipo == 'sabado')
+                <span>Sábados</span>
+            @else
+                <span>
+                    @if(!empty($inscripcion->grupo->horario->dias))
+                        {{ implode(', ', array_map('ucfirst', (array)$inscripcion->grupo->horario->dias)) }}
+                    @else
+                        Días no definidos
+                    @endif
+                </span>
+            @endif
+            <div class="horas">
+                {{ $inscripcion->grupo->horario->hora_inicio->format('H:i') }} - 
+                {{ $inscripcion->grupo->horario->hora_fin->format('H:i') }}
+            </div>
+        </div>
+    @else
+        <span class="text-warning">Sin horario asignado</span>
+    @endif
+</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
                                     {{ $inscripcion->periodo_cursado }}

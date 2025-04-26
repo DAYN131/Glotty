@@ -163,13 +163,25 @@
             {{ $grupo->aula->edificio ?? '' }}{{ $grupo->aula->numero_aula ?? 'N/A' }}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-            @if($grupo->horario)
-                {{ $grupo->horario->nombre }}: 
-                {{ \Carbon\Carbon::parse($grupo->horario->hora_inicio)->format('H:i') }} - 
-                {{ \Carbon\Carbon::parse($grupo->horario->hora_fin)->format('H:i') }}
+            {{ $grupo->horario->nombre }}
+            
+            
+
+            <div class="text-xs text-gray-500 mt-1">
+            @if($grupo->horario->tipo == 'sabado')
+            
+            Sábados
             @else
-                N/A
+            {{ implode(', ', array_map('ucfirst', $grupo->horario->dias)) }}
             @endif
+            </div>
+
+            <!-- Horas -->
+            <div class="text-xs text-gray-500 mt-1">
+                {{ $grupo->horario->hora_inicio->format('H:i') }} - 
+                {{ $grupo->horario->hora_fin->format('H:i') }}
+            </div>
+
         </td>
        
           <!-- Sidebar --> <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -208,9 +220,7 @@
                             </div>
                             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                                 <div>
-                                    <p class="text-sm text-gray-700">
-                                        Mostrando <span class="font-medium">1</span> a <span class="font-medium">5</span> de <span class="font-medium">12</span> resultados
-                                    </p>
+                                    
                                 </div>
                                 <div>
                                     <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">

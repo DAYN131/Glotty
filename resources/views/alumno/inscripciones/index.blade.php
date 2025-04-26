@@ -28,6 +28,21 @@
         }
     </script>
 </head>
+
+
+@if(session('success'))
+    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4">
+        <p>{{ session('success') }}</p>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+        <p>{{ session('error') }}</p>
+    </div>
+@endif
+
+
 <body class="bg-gray-50 min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <!-- Encabezado mejorado -->
@@ -93,7 +108,7 @@
                     <div>
                         <p class="text-sm text-gray-500">Rechazadas/Expiradas</p>
                         <p class="text-xl font-semibold">
-                            {{ $inscripciones->whereIn('estatus_inscripcion', ['Rechazada', 'Expirada'])->count() }}
+                            {{ $inscripciones->whereIn('estatus_inscripcion', ['Expirada'])->count() }}
                         </p>
                     </div>
                 </div>
@@ -130,16 +145,18 @@
                   
 
 
-                            <!-- La celda del profesor ya la tienes, pero podemos mejorarla -->
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="font-medium text-gray-900">
                                 {{ $inscripcion->grupo->nivel_ingles }}-{{ $inscripcion->grupo->letra_grupo }}
                             </div>
                             <div class="text-xs text-gray-500 mt-1">
                                 <i class="fas fa-user-tie mr-1"></i>
-                                {{ $inscripcion->grupo->profesor->nombre_profesor ?? 'Sin asignar' }}  {{ $inscripcion->grupo->profesor->apellidos_profesor ?? 'Sin asignar' }}
+                                Prof: {{ $inscripcion->grupo->profesor->nombre_profesor ?? 'Sin asignar' }} {{ $inscripcion->grupo->profesor->apellidos_profesor ?? 'Sin asignar' }}
                             </div>
-                           
+                            <div class="text-xs text-gray-500 mt-1">
+                                <i class="fas fa-door-open mr-1"></i>
+                                Aula: {{ $inscripcion->grupo->aula->edificio ?? 'N/A' }}-{{ $inscripcion->grupo->aula->numero_aula ?? 'N/A' }}
+                            </div>
                         </td>
                             
                             <!-- Celda Periodo -->
@@ -156,28 +173,31 @@
                                 </span>
                             </td>
                             
-                            <!-- Celda Horario con más información -->
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <div class="flex items-center">
-                                    <i class="far fa-clock mr-2 text-gray-400"></i>
-                                    <span class="font-medium">{{ $inscripcion->grupo->horario->nombre ?? 'N/A' }}</span>
+                            @if($inscripcion->grupo->horario)
+                                <div class="flex items-start">
+                                    <i class="far fa-calendar-alt mt-1 mr-2 text-gray-400"></i>
+                                    <div>
+                                        <!-- Días formateados -->
+                                        <div class="font-medium">
+                                            @if($inscripcion->grupo->horario->tipo == 'sabado')
+                                                Sábados
+                                            @else
+                                                {{ implode(', ', array_map('ucfirst', $inscripcion->grupo->horario->dias)) }}
+                                            @endif
+                                        </div>
+                                        
+                                        <!-- Horas -->
+                                        <div class="text-xs text-gray-500 mt-1">
+                                            {{ $inscripcion->grupo->horario->hora_inicio->format('H:i') }} - 
+                                            {{ $inscripcion->grupo->horario->hora_fin->format('H:i') }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="text-xs text-gray-400 mt-1">
-                                    <span class="mr-2"> Dia(s): {{ $inscripcion->grupo->horario->tipo ?? 'N/A' }}</span>
-                                    
-
-                                </div>
-
-                                <div class="text-xs text-gray-400 mt-1">
-                                  
-                                    <span>{{ $inscripcion->grupo->horario->hora_inicio ?? 'N/A' }} -</span>
-                                    <span>{{ $inscripcion->grupo->horario->hora_fin ?? 'N/A' }}</span>
-
-                                </div>
-                               
-
-
-                            </td>
+                            @else
+                                <span class="text-red-500">Horario no asignado</span>
+                            @endif
+                        </td>
                             
                             <!-- Celda Estatus -->
                             <td class="px-6 py-4 whitespace-nowrap">

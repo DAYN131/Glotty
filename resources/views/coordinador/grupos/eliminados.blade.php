@@ -140,13 +140,22 @@
                                         {{ $grupo->aula->edificio ?? '' }}{{ $grupo->aula->numero_aula ?? 'N/A' }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        @if($grupo->horario)
-                                            {{ $grupo->horario->nombre }}: 
-                                            {{ \Carbon\Carbon::parse($grupo->horario->hora_inicio)->format('H:i') }} - 
-                                            {{ \Carbon\Carbon::parse($grupo->horario->hora_fin)->format('H:i') }}
-                                        @else
-                                            N/A
-                                        @endif
+                                    {{ $grupo->horario->nombre }}
+            
+                                            <div class="text-xs text-gray-500 mt-1">
+                                            @if($grupo->horario->tipo == 'sabado')
+                                            
+                                            Sábados
+                                            @else
+                                            {{ implode(', ', array_map('ucfirst', $grupo->horario->dias)) }}
+                                            @endif
+                                            </div>
+
+                                            <!-- Horas -->
+                                            <div class="text-xs text-gray-500 mt-1">
+                                                {{ $grupo->horario->hora_inicio->format('H:i') }} - 
+                                                {{ $grupo->horario->hora_fin->format('H:i') }}
+                                            </div>
                                     </td>
 
 

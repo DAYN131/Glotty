@@ -46,12 +46,15 @@ class Alumno extends Authenticatable
      * Método para obtener el nivel recomendado (simplificado para MVP)
      */
 
-    public function nivelRecomendado()
-    {
-        // Ejemplo básico - ajusta según tu lógica
-        return $this->ultimo_nivel_aprobado + 1 ?? 1;
-    }
-
+     public function nivelRecomendado()
+     {
+         $ultimoNivel = $this->inscripciones()
+             ->where('estatus_inscripcion', 'Aprobada')
+             ->latest('fecha_inscripcion')
+             ->value('nivel_solicitado') ?? 0;
+     
+         return min($ultimoNivel + 1, 5); // Nivel máximo: 5
+     }
 
    
        // Relación con grupos a través de inscripciones
