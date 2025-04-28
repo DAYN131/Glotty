@@ -162,7 +162,7 @@
                         <!-- Tercera fila: Profesor -->
                         <div class="mb-6">
                             <label for="id_profesor" class="block text-sm font-medium text-gray-700 mb-1">Profesor</label>
-                            <select id="id_profesor" name="id_profesor" required
+                            <select id="rfc_profesor" name="rfc_profesor" required>
                                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50 py-2 px-3 border">
                                 <option value="">Seleccione un profesor</option>
                                 @foreach($profesores as $profesor)

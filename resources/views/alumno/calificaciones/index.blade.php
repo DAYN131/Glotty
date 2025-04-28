@@ -154,79 +154,84 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             <!-- 1er Parcial -->
             <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm relative overflow-hidden grade-badge"
-                 style="color: {{ $insc->calificacion_parcial_1 >= 70 ? '#047857' : ($insc->calificacion_parcial_1 >= 60 ? '#B45309' : '#DC2626') }}">
-              <div class="flex justify-between items-end">
-                <div>
-                  <div class="flex items-center">
-                    <i class="fas fa-file-alt mr-2"></i>
-                    <p class="text-sm font-medium text-gray-700">1er Parcial</p>
-                  </div>
-                  <p class="text-3xl font-bold mt-2">
-                    {{ $insc->calificacion_parcial_1 ?? '--' }}
-                  </p>
+              style="color: {{ $insc->calificacion_parcial_1 === null ? '#6B7280' : ($insc->calificacion_parcial_1 >= 70 ? '#047857' : ($insc->calificacion_parcial_1 >= 60 ? '#B45309' : '#DC2626')) }}">
+            <div class="flex justify-between items-end">
+              <div>
+                <div class="flex items-center">
+                  <i class="fas fa-file-alt mr-2"></i>
+                  <p class="text-sm font-medium text-gray-700">1er Parcial</p>
                 </div>
-                <div class="flex flex-col items-end">
-                  <span class="text-xs text-gray-400">/100</span>
-                  @if($insc->calificacion_parcial_1 >= 70)
-                    <span class="mt-3 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">Aprobado</span>
-                  @elseif($insc->calificacion_parcial_1 >= 60)
-                    <span class="mt-3 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-medium">En riesgo</span>
-                  @else
-                    <span class="mt-3 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full font-medium">Reprobado</span>
-                  @endif
-                </div>
+                <p class="text-3xl font-bold mt-2">
+                  {{ $insc->calificacion_parcial_1 ?? '--' }}
+                </p>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="text-xs text-gray-400">/100</span>
+                @if($insc->calificacion_parcial_1 === null)
+                  <span class="mt-3 text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full font-medium">Pendiente</span>
+                @elseif($insc->calificacion_parcial_1 >= 70)
+                  <span class="mt-3 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">Aprobado</span>
+                @elseif($insc->calificacion_parcial_1 >= 60)
+                  <span class="mt-3 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-medium">En riesgo</span>
+                @else
+                  <span class="mt-3 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full font-medium">Reprobado</span>
+                @endif
               </div>
             </div>
+          </div>
             
             <!-- 2do Parcial -->
             <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm relative overflow-hidden grade-badge"
-                 style="color: {{ $insc->calificacion_parcial_2 >= 70 ? '#047857' : ($insc->calificacion_parcial_2 >= 60 ? '#B45309' : '#DC2626') }}">
-              <div class="flex justify-between items-end">
-                <div>
-                  <div class="flex items-center">
-                    <i class="fas fa-file-alt mr-2"></i>
-                    <p class="text-sm font-medium text-gray-700">2do Parcial</p>
-                  </div>
-                  <p class="text-3xl font-bold mt-2">
-                    {{ $insc->calificacion_parcial_2 ?? '--' }}
-                  </p>
+              style="color: {{ $insc->calificacion_parcial_2 === null ? '#6B7280' : ($insc->calificacion_parcial_2 >= 70 ? '#047857' : ($insc->calificacion_parcial_2 >= 60 ? '#B45309' : '#DC2626')) }}">
+            <div class="flex justify-between items-end">
+              <div>
+                <div class="flex items-center">
+                  <i class="fas fa-file-alt mr-2"></i>
+                  <p class="text-sm font-medium text-gray-700">2do Parcial</p>
                 </div>
-                <div class="flex flex-col items-end">
-                  <span class="text-xs text-gray-400">/100</span>
-                  @if($insc->calificacion_parcial_2 >= 70)
-                    <span class="mt-3 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">Aprobado</span>
-                  @elseif($insc->calificacion_parcial_2 >= 60)
-                    <span class="mt-3 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-medium">En riesgo</span>
-                  @else
-                    <span class="mt-3 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full font-medium">Reprobado</span>
-                  @endif
-                </div>
+                <p class="text-3xl font-bold mt-2">
+                  {{ $insc->calificacion_parcial_2 ?? '--' }}
+                </p>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="text-xs text-gray-400">/100</span>
+                @if($insc->calificacion_parcial_2 === null)
+                  <span class="mt-3 text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full font-medium">Pendiente</span>
+                @elseif($insc->calificacion_parcial_2 >= 70)
+                  <span class="mt-3 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">Aprobado</span>
+                @elseif($insc->calificacion_parcial_2 >= 60)
+                  <span class="mt-3 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-medium">En riesgo</span>
+                @else
+                  <span class="mt-3 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full font-medium">Reprobado</span>
+                @endif
               </div>
             </div>
+          </div>
             
             <!-- Final -->
             <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-sm relative overflow-hidden grade-badge"
-                 style="color: {{ $insc->calificacion_final >= 70 ? '#047857' : ($insc->calificacion_final >= 60 ? '#B45309' : '#DC2626') }}">
-              <div class="flex justify-between items-end">
-                <div>
-                  <div class="flex items-center">
-                    <i class="fas fa-award mr-2"></i>
-                    <p class="text-sm font-medium text-gray-700">Calificación Final</p>
-                  </div>
-                  <p class="text-3xl font-bold mt-2">
-                    {{ $insc->calificacion_final ?? '--' }}
-                  </p>
+              style="color: {{ $insc->calificacion_final === null ? '#6B7280' : ($insc->calificacion_final >= 70 ? '#047857' : ($insc->calificacion_final >= 60 ? '#B45309' : '#DC2626')) }}">
+            <div class="flex justify-between items-end">
+              <div>
+                <div class="flex items-center">
+                  <i class="fas fa-award mr-2"></i>
+                  <p class="text-sm font-medium text-gray-700">Calificación Final</p>
                 </div>
-                <div class="flex flex-col items-end">
-                  <span class="text-xs text-gray-400">/100</span>
-                  @if($insc->calificacion_final >= 70)
-                    <span class="mt-3 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">Aprobado</span>
-                  @elseif($insc->calificacion_final >= 60)
-                    <span class="mt-3 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-medium">En riesgo</span>
-                  @else
-                    <span class="mt-3 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full font-medium">Reprobado</span>
-                  @endif
-                </div>
+                <p class="text-3xl font-bold mt-2">
+                  {{ $insc->calificacion_final ?? '--' }}
+                </p>
+              </div>
+              <div class="flex flex-col items-end">
+                <span class="text-xs text-gray-400">/100</span>
+                @if($insc->calificacion_final === null)
+                  <span class="mt-3 text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full font-medium">Pendiente</span>
+                @elseif($insc->calificacion_final >= 70)
+                  <span class="mt-3 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">Aprobado</span>
+                @elseif($insc->calificacion_final >= 60)
+                  <span class="mt-3 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-medium">En riesgo</span>
+                @else
+                  <span class="mt-3 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full font-medium">Reprobado</span>
+                @endif
               </div>
             </div>
           </div>
