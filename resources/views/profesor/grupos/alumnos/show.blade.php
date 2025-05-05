@@ -256,6 +256,14 @@
                                         <span>Estado</span>
                                     </div>
                                 </th>
+
+                                <th scope="col" class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <div class="flex items-center justify-center">
+                                        <span>Guardado</span>
+                                    </div>
+                                </th>
+
+                             
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -308,17 +316,39 @@
                                         <div class="grade-indicator w-full" id="indicator-2-{{ $inscripcion->id }}"></div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center grade-cell">
-                                    <div class="text-sm font-medium text-gray-900" id="final-{{ $inscripcion->id }}">
-                                        {{ $inscripcion->calificacion_final ?? '--' }}
+
+                                 <td class="px-6 py-4 whitespace-nowrap text-center grade-cell">
+                                    <div class="flex flex-col items-center">
+                                        <!-- Mostrar calificación actual -->
+                                        <div class="text-sm font-medium text-gray-900" id="current-final-{{ $inscripcion->id }}">
+                                            {{ $inscripcion->calificacion_final ?? '--' }}
+                                        </div>
+                                        <div class="grade-indicator w-full" id="current-indicator-final-{{ $inscripcion->id }}"></div>
+                                        
+                                        <!-- Mostrar vista previa de cambios -->
+                                        <div class="mt-2 text-sm font-medium" id="preview-final-{{ $inscripcion->id }}" style="display: none;">
+                                            --
+                                        </div>
+                                        <div class="grade-indicator w-full" id="preview-indicator-final-{{ $inscripcion->id }}"></div>
                                     </div>
-                                    <div class="grade-indicator w-full" id="indicator-final-{{ $inscripcion->id }}"></div>
                                 </td>
+
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" id="status-{{ $inscripcion->id }}">
-                                        {{ $inscripcion->calificacion_final === null ? 'Sin calificar' : ($inscripcion->calificacion_final >= 70 ? 'Aprobado' : ($inscripcion->calificacion_final >= 60 ? 'En riesgo' : 'Reprobado')) }}
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full" 
+                                                id="status-{{ $inscripcion->id }}">
+                                                {{ $inscripcion->calificacion_final === null ? 'Sin calificar' : 
+                                                ($inscripcion->calificacion_final >= 70 ? 'Aprobado' : 
+                                                ($inscripcion->calificacion_final >= 60 ? 'En riesgo' : 'Reprobado')) }}
+                                            </span>
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                                        id="saved-status-{{ $inscripcion->id }}">
+                                        <i class="fas fa-check-circle mr-1"></i> Guardado
                                     </span>
                                 </td>
+
                             </tr>
                             @endforeach
                         </tbody>
@@ -334,109 +364,161 @@
                     Cancelar
                 </button>
                 
-                <button type="submit" 
+                <button type="submit" id="submitBtn"
                         class="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg flex items-center transition-colors">
                     <i class="fas fa-save mr-2"></i>
-                    Guardar Calificaciones
+                    Guardar Cambios
                 </button>
             </div>
         </form>
     </div>
     
     <script>
-        // Función para determinar el color según la calificación
-        function getColorForGrade(grade) {
-            if (!grade || grade === '--') return 'transparent';
-            grade = parseFloat(grade);
-            if (grade >= 70) return '#10b981'; // Verde
-            if (grade >= 60) return '#f59e0b'; // Amarillo
-            return '#ef4444'; // Rojo
-        }
+    // Objeto para almacenar cambios temporales
+    const pendingChanges = {};
+    
+    // Función para determinar el color según la calificación
+    function getColorForGrade(grade) {
+        if (!grade || grade === '--') return 'transparent';
+        grade = parseFloat(grade);
+        if (grade >= 70) return '#10b981'; // Verde
+        if (grade >= 60) return '#f59e0b'; // Amarillo
+        return '#ef4444'; // Rojo
+    }
+
+    // Función para determinar el texto de estado académico
+    function getStatusText(grade) {
+        if (!grade || grade === '--' || grade === null) return 'Sin calificar';
+        grade = parseFloat(grade);
+        if (grade >= 70) return 'Aprobado';
+        if (grade >= 60) return 'En riesgo';
+        return 'Reprobado';
+    }
+
+    // Función para actualizar el estado de guardado
+    function updateSavedStatus(inscripcionId, hasChanges) {
+        const savedStatus = document.getElementById(`saved-status-${inscripcionId}`);
         
-        // Función para determinar el texto de estado
-        function getStatusText(grade) {
-            if (!grade || grade === '--' || grade === null) return 'Sin calificar';
-            grade = parseFloat(grade);
-            if (grade >= 70) return 'Aprobado';
-            if (grade >= 60) return 'En riesgo';
-            return 'Reprobado';
+        if (hasChanges) {
+            savedStatus.innerHTML = '<i class="fas fa-exclamation-circle mr-1"></i> Cambios pendientes';
+            savedStatus.classList.remove('bg-green-100', 'text-green-800');
+            savedStatus.classList.add('bg-yellow-100', 'text-yellow-800');
+        } else {
+            savedStatus.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Guardado';
+            savedStatus.classList.remove('bg-yellow-100', 'text-yellow-800');
+            savedStatus.classList.add('bg-green-100', 'text-green-800');
         }
+    }
+
+    // Función para verificar si hay cambios reales
+    function hasRealChanges(inscripcionId) {
+        if (!pendingChanges[inscripcionId]) return false;
         
-        // Función para actualizar el indicador de calificación
-        function updateGradeIndicator(input) {
-            const inscripcionId = input.dataset.inscripcion;
-            const parcial = input.name.includes('parcial_1') ? 1 : 2;
-            const indicator = document.getElementById(`indicator-${parcial}-${inscripcionId}`);
-            const color = getColorForGrade(input.value);
-            indicator.style.backgroundColor = color;
+        const parcial1Input = document.querySelector(`input[name="calificaciones[${inscripcionId}][parcial_1]"]`);
+        const parcial2Input = document.querySelector(`input[name="calificaciones[${inscripcionId}][parcial_2]"]`);
+        
+        // Comparar con los valores originales
+        const originalParcial1 = parcial1Input.defaultValue === '' ? null : parseFloat(parcial1Input.defaultValue);
+        const originalParcial2 = parcial2Input.defaultValue === '' ? null : parseFloat(parcial2Input.defaultValue);
+        
+        const currentParcial1 = pendingChanges[inscripcionId].parcial_1 !== undefined ? 
+                              pendingChanges[inscripcionId].parcial_1 : 
+                              (parcial1Input.value === '' ? null : parseFloat(parcial1Input.value));
+        
+        const currentParcial2 = pendingChanges[inscripcionId].parcial_2 !== undefined ? 
+                              pendingChanges[inscripcionId].parcial_2 : 
+                              (parcial2Input.value === '' ? null : parseFloat(parcial2Input.value));
+        
+        return (currentParcial1 !== originalParcial1) || (currentParcial2 !== originalParcial2);
+    }
+
+    // Función para actualizar el indicador de calificación
+    function updateGradeIndicator(input) {
+        const inscripcionId = input.dataset.inscripcion;
+        const parcial = input.name.includes('parcial_1') ? 1 : 2;
+        const currentValue = input.value === '' ? null : parseFloat(input.value);
+        const originalValue = input.defaultValue === '' ? null : parseFloat(input.defaultValue);
+        
+        // Actualizar indicador visual
+        const indicator = document.getElementById(`indicator-${parcial}-${inscripcionId}`);
+        indicator.style.backgroundColor = getColorForGrade(input.value);
+        
+        // Habilitar/deshabilitar parcial 2 según parcial 1
+        if (parcial === 1) {
+            const parcial2Input = document.querySelector(`input[name="calificaciones[${inscripcionId}][parcial_2]"]`);
+            const cancelParcial2Btn = document.querySelector(`button[onclick="cancelGrade(this, '${inscripcionId}', 2)"]`);
             
-            // Habilitar/deshabilitar parcial 2 según parcial 1
-            if (parcial === 1) {
-                const parcial2Input = document.querySelector(`input[name="calificaciones[${inscripcionId}][parcial_2]"]`);
-                const cancelParcial2Btn = document.querySelector(`button[onclick="cancelGrade(this, '${inscripcionId}', 2)"]`);
+            if (input.value === '') {
+                parcial2Input.disabled = true;
+                cancelParcial2Btn.disabled = true;
+                parcial2Input.value = '';
+                document.getElementById(`indicator-2-${inscripcionId}`).style.backgroundColor = 'transparent';
+            } else {
+                parcial2Input.disabled = false;
+                cancelParcial2Btn.disabled = false;
+            }
+        }
+        
+        // Actualizar cambios pendientes solo si hay diferencia con el valor original
+        if (currentValue !== originalValue) {
+            if (!pendingChanges[inscripcionId]) {
+                pendingChanges[inscripcionId] = {};
+            }
+            pendingChanges[inscripcionId][`parcial_${parcial}`] = currentValue;
+        } else {
+            // Si vuelve al valor original, eliminar de cambios pendientes
+            if (pendingChanges[inscripcionId]) {
+                delete pendingChanges[inscripcionId][`parcial_${parcial}`];
                 
-                if (input.value === '') {
-                    parcial2Input.disabled = true;
-                    cancelParcial2Btn.disabled = true;
-                    // Limpiar parcial 2 si se borra parcial 1
-                    parcial2Input.value = '';
-                    document.getElementById(`indicator-2-${inscripcionId}`).style.backgroundColor = 'transparent';
-                } else {
-                    parcial2Input.disabled = false;
-                    cancelParcial2Btn.disabled = false;
+                // Si no quedan cambios, eliminar el objeto
+                if (Object.keys(pendingChanges[inscripcionId]).length === 0) {
+                    delete pendingChanges[inscripcionId];
                 }
             }
-            
-            calculateFinalGrade(inscripcionId);
         }
         
-        // Función para cancelar una calificación
-        function cancelGrade(button, inscripcionId, parcial) {
-            const input = document.querySelector(`input[name="calificaciones[${inscripcionId}][parcial_${parcial}]"]`);
-            input.value = '';
-            
-            // Actualizar indicador
-            const indicator = document.getElementById(`indicator-${parcial}-${inscripcionId}`);
-            indicator.style.backgroundColor = 'transparent';
-            
-            // Recalcular final si es necesario
-            calculateFinalGrade(inscripcionId);
-            
-            // Mostrar mensaje de confirmación
-            button.innerHTML = '<i class="fas fa-check mr-1"></i> Cancelado';
-            button.classList.remove('text-gray-500', 'hover:text-gray-700');
-            button.classList.add('text-green-500');
-            
-            setTimeout(() => {
-                button.innerHTML = '<i class="fas fa-ban mr-1"></i> Cancelar';
-                button.classList.remove('text-green-500');
-                button.classList.add('text-gray-500', 'hover:text-gray-700');
-            }, 2000);
-        }
+        // Actualizar estado de guardado
+        updateSavedStatus(inscripcionId, hasRealChanges(inscripcionId));
         
-        // Función para calcular la calificación final
-        function calculateFinalGrade(inscripcionId) {
-            const parcial1Input = document.querySelector(`input[name="calificaciones[${inscripcionId}][parcial_1]"]`);
-            const parcial2Input = document.querySelector(`input[name="calificaciones[${inscripcionId}][parcial_2]"]`);
-            
-            const parcial1 = parcial1Input.value;
-            const parcial2 = parcial2Input.value;
-            const finalElement = document.getElementById(`final-${inscripcionId}`);
-            const finalIndicator = document.getElementById(`indicator-final-${inscripcionId}`);
-            const statusElement = document.getElementById(`status-${inscripcionId}`);
-            
-            // Calcular solo si ambos parciales tienen valor
-            if (parcial1 !== '' && parcial2 !== '') {
-                const final = (parseFloat(parcial1) + parseFloat(parcial2)) / 2;
-                finalElement.textContent = final.toFixed(1);
-                finalIndicator.style.backgroundColor = getColorForGrade(final);
+        // Calcular promedio
+        calculateFinalGrade(inscripcionId);
+    }
+
+    // Función para calcular la calificación final
+    function calculateFinalGrade(inscripcionId) {
+        const changes = pendingChanges[inscripcionId] || {};
+        const parcial1Input = document.querySelector(`input[name="calificaciones[${inscripcionId}][parcial_1]"]`);
+        const parcial2Input = document.querySelector(`input[name="calificaciones[${inscripcionId}][parcial_2]"]`);
+        
+        // Obtener valores actuales (considerando cambios pendientes)
+        const parcial1 = changes.parcial_1 !== undefined ? 
+                        changes.parcial_1 : 
+                        (parcial1Input.value === '' ? null : parseFloat(parcial1Input.value));
+        
+        const parcial2 = changes.parcial_2 !== undefined ? 
+                        changes.parcial_2 : 
+                        (parcial2Input.value === '' ? null : parseFloat(parcial2Input.value));
+        
+        const finalElement = document.getElementById(`final-${inscripcionId}`);
+        const finalIndicator = document.getElementById(`indicator-final-${inscripcionId}`);
+        const statusElement = document.getElementById(`status-${inscripcionId}`);
+        
+        // Calcular solo si al menos un parcial tiene valor
+        if (parcial1 !== null || parcial2 !== null) {
+            let final;
+            if (parcial1 !== null && parcial2 !== null) {
+                final = (parcial1 + parcial2) / 2;
+            } else if (parcial1 !== null) {
+                final = parcial1;
             } else {
-                finalElement.textContent = '--';
-                finalIndicator.style.backgroundColor = 'transparent';
+                final = parcial2;
             }
             
-            // Actualizar estado
-            const statusText = getStatusText(finalElement.textContent);
+            finalElement.textContent = final.toFixed(1);
+            finalIndicator.style.backgroundColor = getColorForGrade(final);
+            
+            // Actualizar estado académico
+            const statusText = getStatusText(final);
             statusElement.textContent = statusText;
             
             // Actualizar clases de estado
@@ -450,70 +532,162 @@
             } else {
                 statusElement.classList.add('bg-gray-100', 'text-gray-800');
             }
+        } else {
+            finalElement.textContent = '--';
+            finalIndicator.style.backgroundColor = 'transparent';
+            statusElement.textContent = 'Sin calificar';
+            statusElement.className = 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800';
         }
+    }
+
+    // Función para cancelar una calificación
+    function cancelGrade(button, inscripcionId, parcial) {
+        const input = document.querySelector(`input[name="calificaciones[${inscripcionId}][parcial_${parcial}]"]`);
+        input.value = '';
         
-        // Calcular todos los promedios
-        document.getElementById('calcularPromedios').addEventListener('click', function() {
-            const inputs = document.querySelectorAll('[data-inscripcion]');
-            const inscripcionIds = Array.from(new Set(Array.from(inputs).map(input => input.dataset.inscripcion)));
-            
-            inscripcionIds.forEach(id => {
-                calculateFinalGrade(id);
-            });
-            
-            // Mostrar notificación
-            const notification = document.createElement('div');
-            notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center';
-            notification.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Promedios calculados correctamente';
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        });
+        // Actualizar indicador
+        const indicator = document.getElementById(`indicator-${parcial}-${inscripcionId}`);
+        indicator.style.backgroundColor = 'transparent';
         
-        // Confirmación al enviar el formulario
-        document.getElementById('calificacionesForm').addEventListener('submit', function(e) {
-            const emptyGrades = document.querySelectorAll('input[type="number"][value=""]');
-            if (emptyGrades.length > 0) {
-                if (!confirm('Algunas calificaciones están marcadas como "Cancelar". ¿Desea continuar?')) {
-                    e.preventDefault();
+        // Registrar cambio pendiente solo si difiere del original
+        const originalValue = input.defaultValue === '' ? null : parseFloat(input.defaultValue);
+        if (null !== originalValue) {
+            if (!pendingChanges[inscripcionId]) {
+                pendingChanges[inscripcionId] = {};
+            }
+            pendingChanges[inscripcionId][`parcial_${parcial}`] = null;
+        } else {
+            // Si el valor original ya era null, eliminar de cambios pendientes
+            if (pendingChanges[inscripcionId]) {
+                delete pendingChanges[inscripcionId][`parcial_${parcial}`];
+                
+                // Si no quedan cambios, eliminar el objeto
+                if (Object.keys(pendingChanges[inscripcionId]).length === 0) {
+                    delete pendingChanges[inscripcionId];
                 }
             }
+        }
+        
+        // Recalcular final
+        calculateFinalGrade(inscripcionId);
+        
+        // Actualizar estado de guardado
+        updateSavedStatus(inscripcionId, hasRealChanges(inscripcionId));
+        
+        // Mostrar mensaje de confirmación
+        button.innerHTML = '<i class="fas fa-check mr-1"></i> Cancelado';
+        button.classList.remove('text-gray-500', 'hover:text-gray-700');
+        button.classList.add('text-green-500');
+        
+        setTimeout(() => {
+            button.innerHTML = '<i class="fas fa-ban mr-1"></i> Cancelar';
+            button.classList.remove('text-green-500');
+            button.classList.add('text-gray-500', 'hover:text-gray-700');
+        }, 2000);
+    }
+    
+    // Calcular todos los promedios
+    document.getElementById('calcularPromedios').addEventListener('click', function() {
+        const inputs = document.querySelectorAll('[data-inscripcion]');
+        const inscripcionIds = Array.from(new Set(Array.from(inputs).map(input => input.dataset.inscripcion)));
+        
+        inscripcionIds.forEach(id => {
+            calculateFinalGrade(id);
         });
+        
+        // Mostrar notificación
+        showNotification('Promedios calculados correctamente', 'success');
+    });
+    
+    // Confirmación al enviar el formulario
+    document.getElementById('calificacionesForm').addEventListener('submit', function(e) {
+        // Filtrar solo los cambios reales
+        const realChanges = {};
+        Object.keys(pendingChanges).forEach(id => {
+            if (hasRealChanges(id)) {
+                realChanges[id] = pendingChanges[id];
+            }
+        });
+        
+        if (Object.keys(realChanges).length === 0) {
+            e.preventDefault();
+            showNotification('No hay cambios para guardar', 'warning');
+            return;
+        }
+        
+        // Mostrar confirmación
+        if (!confirm('¿Está seguro de que desea guardar los cambios?')) {
+            e.preventDefault();
+        } else {
+            // Mostrar loader
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Guardando...';
+            
+            // Actualizar estados a "Guardado" después de enviar
+            setTimeout(() => {
+                const inputs = document.querySelectorAll('[data-inscripcion]');
+                const inscripcionIds = Array.from(new Set(Array.from(inputs).map(input => input.dataset.inscripcion)));
+                
+                inscripcionIds.forEach(id => {
+                    updateSavedStatus(id, false);
+                });
+            }, 1000);
+        }
+    });
 
-        // Inicializar indicadores al cargar la página
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('.grade-input');
-            inputs.forEach(input => {
-                updateGradeIndicator(input);
-            });
+    // Función para mostrar notificaciones
+    function showNotification(message, type = 'success') {
+        const colors = {
+            success: 'bg-green-500',
+            error: 'bg-red-500',
+            warning: 'bg-yellow-500',
+            info: 'bg-blue-500'
+        };
+        
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+        
+        const notification = document.createElement('div');
+        notification.className = `fixed bottom-4 right-4 ${colors[type]} text-white px-4 py-2 rounded-lg shadow-lg flex items-center animate-fade-in`;
+        notification.innerHTML = `<i class="fas ${icons[type]} mr-2"></i> ${message}`;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.add('animate-fade-out');
+            setTimeout(() => {
+                notification.remove();
+            }, 500);
+        }, 3000);
+    }
+
+    // Inicializar indicadores al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('.grade-input');
+        
+        // Inicializar indicadores de calificación
+        inputs.forEach(input => {
+            if (input.value) {
+                const indicator = document.getElementById(`indicator-${input.name.includes('parcial_1') ? 1 : 2}-${input.dataset.inscripcion}`);
+                indicator.style.backgroundColor = getColorForGrade(input.value);
+            }
+            
+            // Guardar el valor original como defaultValue
+            input.defaultValue = input.value;
+        });
+        
+        // Inicializar estados de guardado
+        const inscripcionIds = Array.from(new Set(Array.from(inputs).map(input => input.dataset.inscripcion)));
+        inscripcionIds.forEach(id => {
+            updateSavedStatus(id, false);
             
             // Inicializar indicadores de calificación final
-            document.querySelectorAll('[id^="final-"]').forEach(el => {
-                const inscripcionId = el.id.split('-')[1];
-                const finalIndicator = document.getElementById(`indicator-final-${inscripcionId}`);
-                const finalGrade = el.textContent;
-                finalIndicator.style.backgroundColor = getColorForGrade(finalGrade);
-                
-                // Actualizar estado inicial
-                const statusElement = document.getElementById(`status-${inscripcionId}`);
-                const statusText = getStatusText(finalGrade);
-                statusElement.textContent = statusText;
-                
-                // Actualizar clases de estado
-                statusElement.className = 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full';
-                if (finalGrade >= 70 || finalGrade === 'Aprobado') {
-                    statusElement.classList.add('bg-green-100', 'text-green-800');
-                } else if (finalGrade >= 60 || finalGrade === 'En riesgo') {
-                    statusElement.classList.add('bg-yellow-100', 'text-yellow-800');
-                } else if (finalGrade !== '--' && finalGrade !== 'Sin calificar') {
-                    statusElement.classList.add('bg-red-100', 'text-red-800');
-                } else {
-                    statusElement.classList.add('bg-gray-100', 'text-gray-800');
-                }
-            });
+            const finalGrade = document.getElementById(`final-${id}`).textContent;
+            document.getElementById(`indicator-final-${id}`).style.backgroundColor = getColorForGrade(finalGrade);
         });
-    </script>
+    });
+</script>
 </body>
 </html>
