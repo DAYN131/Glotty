@@ -11,10 +11,6 @@ use App\Http\Controllers\CoordInscripcionController;
 use App\Http\Controllers\ProfesorController;
 use App\Http\Controllers\DocumentController;
 
-
-
-
-
 Route::get('/', function () {
    return view('login');
 });
@@ -231,11 +227,11 @@ Route::middleware(['auth:coordinador'])->prefix('coordinador')->group(function (
 });
 
 // Para alumnos
-Route::middleware(['auth:alumno'])->get('/alumnos/documentos', 
+Route::middleware(['auth:alumno'])->get('/alumno/documentos', 
     [DocumentController::class, 'mostrarDocumentos']
-)->name('alumno.documentos');
+)->name('alumno.documentos.index');
 
-// Descarga (accesible para ambos roles)
-Route::middleware(['auth'])->get('/constancias/descargar/{numero_control}', 
+
+Route::middleware(['auth:alumno'])->get('/documentos/descargar/{no_control}', 
     [DocumentController::class, 'descargarConstancia']
 )->name('constancias.descargar');

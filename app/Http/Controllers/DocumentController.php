@@ -37,21 +37,33 @@ class DocumentController extends Controller
 
     public function mostrarDocumentos()
     {
-        $alumno = auth()->user()->alumno;
-        return view('alumno.documentos', compact('alumno'));
+         // Verifica que el usuario sea alumno y tenga relación
+        if (auth()->guard('alumno')->check()) {
+            $alumno = auth()->guard('alumno')->user();
+            return view('alumno.documentos.index', compact('alumno'));
+        }
+        
+        return redirect('/')->with('error', 'Acceso no autorizado');
     }
 
     
 
-    public function descargarConstancia($numero_control)
+    public function descargarConstancia($no_control)
     {
-        $ruta = "constancias/{$no_control}.pdf";
-    
-    if (Storage::disk('sftp')->exists($ruta)) {
-        $url = "http://tu-ip:8080/{$ruta}";
-        return redirect()->away($url);
-    }
+        // Verifica autenticación y coincidencia de no_control
+        $alumnoAuth = auth()->guard('alumno')->user();
+        if (!$alumnoAuth || $alumnoAuth->no_control != $no_control) {
+            abort(403, 'Acceso no autorizado');
+        }
 
-    return back()->with('error', 'El archivo no existe');
+        $ruta = "constancias/{$no_control}.pdf";
+        
+        if (Storage::disk('sftp')->exists($ruta)) {
+            // Descarga directa con nombre personalizado
+            return Storage::disk('sftp')->download($ruta, "constancia_{$no_control}.pdf");
+        }
+
+        return back()->with('error', 'La constancia no está disponible');
     }
+    
 }
