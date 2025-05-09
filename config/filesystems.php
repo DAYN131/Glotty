@@ -38,6 +38,18 @@ return [
             'report' => false,
         ],
 
+        'sftp' => [
+            'driver' => 'sftp',
+            'host' => env('SFTP_HOST'),
+            'username' => env('SFTP_USERNAME'),
+            'password' => env('SFTP_PASSWORD'),
+            'port' => (int) env('SFTP_PORT', 22), // ¡Forzar a entero!
+            'root' => env('SFTP_ROOT'),
+            'timeout' => 30,
+            'visibility' => 'public',
+            'provider' => League\Flysystem\PhpseclibV3\SftpConnectionProvider::class,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

@@ -9,6 +9,11 @@ use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\AlumnoInscripcionController;
 use App\Http\Controllers\CoordInscripcionController;
 use App\Http\Controllers\ProfesorController;
+use App\Http\Controllers\DocumentController;
+
+
+
+
 
 Route::get('/', function () {
    return view('login');
@@ -213,4 +218,24 @@ Route::middleware(['auth:coordinador'])->prefix('coordinador')->group(function()
 
  });
 
+// * * *  RUTAS PARA DOCUMENTOS *** //
+// RUTAS PARA DOCUMENTOS
+Route::middleware(['auth:coordinador'])->prefix('coordinador')->group(function () {
+    // Mostrar formulario (GET)
+    Route::get('/constancias/subir', [DocumentController::class, 'mostrarFormularioSubida'])
+         ->name('constancias.mostrar-subir');
+         
+    // Procesar subida (POST)
+    Route::post('/constancias/subir', [DocumentController::class, 'subirConstancia'])
+         ->name('constancias.subir');
+});
 
+// Para alumnos
+Route::middleware(['auth:alumno'])->get('/alumnos/documentos', 
+    [DocumentController::class, 'mostrarDocumentos']
+)->name('alumno.documentos');
+
+// Descarga (accesible para ambos roles)
+Route::middleware(['auth'])->get('/constancias/descargar/{numero_control}', 
+    [DocumentController::class, 'descargarConstancia']
+)->name('constancias.descargar');

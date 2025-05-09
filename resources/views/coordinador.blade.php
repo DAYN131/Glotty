@@ -300,10 +300,10 @@
                             <div class="p-3 bg-amber-100/50 rounded-lg mr-4 group-hover:bg-amber-100/70 transition-smooth">
                                 <i class="fas fa-folder-open text-amber-600 text-xl"></i>
                             </div>
-                            <h3 class="text-lg font-semibold text-header">Documentos</h3>
+                            <h3 class="text-lg font-semibold text-header">Constancias</h3>
                         </div>
                         <p class="text-text-secondary mb-5">Gestiona documentos académicos y administrativos del sistema.</p>
-                        <a href="#" class="inline-flex items-center text-amber-600 font-medium group-hover:text-amber-700 transition-smooth">
+                        <a href="{{ route('constancias.mostrar-subir') }}" class="inline-flex items-center text-amber-600 font-medium group-hover:text-amber-700 transition-smooth">
                             Acceder
                             <i class="fas fa-arrow-right ml-2 transition-transform group-hover:translate-x-1"></i>
                         </a>
