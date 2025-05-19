@@ -17,9 +17,7 @@ class Alumno extends Authenticatable
         'apellidos_alumno',
         'carrera',
         'correo_institucional',
-        'contraseña',
-        'nivel_cursado_anterior', // Nuevo campo importante para el MVP
-        'es_nuevo' // Nuevo campo para identificar alumnos nuevos
+        'contraseña'
     ];
 
     protected $hidden = [
@@ -57,7 +55,7 @@ class Alumno extends Authenticatable
      }
 
    
-       // Relación con grupos a través de inscripciones
+    // Relación con grupos a través de inscripciones
     public function grupos()
     {
         return $this->hasManyThrough(

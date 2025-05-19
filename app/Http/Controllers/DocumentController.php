@@ -47,23 +47,43 @@ class DocumentController extends Controller
     }
 
     
-
     public function descargarConstancia($no_control)
-    {
-        // Verifica autenticación y coincidencia de no_control
-        $alumnoAuth = auth()->guard('alumno')->user();
-        if (!$alumnoAuth || $alumnoAuth->no_control != $no_control) {
-            abort(403, 'Acceso no autorizado');
-        }
 
+    {
+        // Verifica si es alumno (solo puede descargar la suya)
+        if (auth()->guard('alumno')->check()) {
+            $alumnoAuth = auth()->guard('alumno')->user();
+            if ($alumnoAuth->no_control != $no_control) {
+                abort(403, 'Acceso no autorizado');
+            }
+        }
+        // Los coordinadores pueden descargar cualquier constancia
+        
         $ruta = "constancias/{$no_control}.pdf";
         
         if (Storage::disk('sftp')->exists($ruta)) {
-            // Descarga directa con nombre personalizado
             return Storage::disk('sftp')->download($ruta, "constancia_{$no_control}.pdf");
         }
 
         return back()->with('error', 'La constancia no está disponible');
     }
+
+    public function eliminarConstancia($no_control)
+    {
+        if (!auth()->guard('coordinador')->check()) {
+            abort(403, 'Solo coordinadores pueden eliminar constancias');
+        }
+
+        $ruta = "constancias/{$no_control}.pdf";
+        
+        if (Storage::disk('sftp')->exists($ruta)) {
+            Storage::disk('sftp')->delete($ruta);
+            return back()->with('success', 'Constancia eliminada correctamente');
+        }
+
+        return back()->with('error', 'La constancia no existe');
+    }
+
+
     
 }

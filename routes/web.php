@@ -231,7 +231,11 @@ Route::middleware(['auth:alumno'])->get('/alumno/documentos',
     [DocumentController::class, 'mostrarDocumentos']
 )->name('alumno.documentos.index');
 
-
-Route::middleware(['auth:alumno'])->get('/documentos/descargar/{no_control}', 
+// Ruta para descargar (accesible para alumnos y coordinadores)
+Route::middleware(['auth:alumno,coordinador'])->get('/documentos/descargar/{no_control}', 
     [DocumentController::class, 'descargarConstancia']
 )->name('constancias.descargar');
+
+Route::middleware(['auth:coordinador'])->delete('/coordinador/constancias/eliminar/{no_control}', 
+    [DocumentController::class, 'eliminarConstancia']
+)->name('constancias.eliminar');
