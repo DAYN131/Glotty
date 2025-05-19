@@ -158,61 +158,68 @@
                     
                     <!-- Estadísticas mejoradas -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
-                        <!-- Tarjeta de estadística 1 -->
+                        <!-- Tarjeta de Alumnos Activos -->
                         <div class="bg-white rounded-xl shadow-card p-5 flex items-center border border-gray-100 hover:shadow-card-hover transition-smooth card-hover">
                             <div class="p-3 bg-primary/10 rounded-lg mr-4">
-                                <i class="fas fa-users text-primary text-xl"></i>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
                             </div>
                             <div>
-                                <div class="text-sm text-text-secondary">Alumnos registrados</div>
-                                <div class="font-bold text-2xl text-primary-dark">138</div>
-                                <div class="text-xs text-green-500 mt-1 flex items-center">
-                                    <i class="fas fa-arrow-up mr-1"></i> 5% desde ayer
-                                </div>
+                                <div class="text-sm text-gray-500">Alumnos activos</div>
+                                <div class="font-bold text-2xl text-primary-dark">{{ $estadisticas['total_alumnos'] }}</div>
+                                <div class="text-xs text-gray-400 mt-1">Inscripciones vigentes</div>
                             </div>
                         </div>
                         
-                        <!-- Tarjeta de estadística 2 -->
+                        <!-- Tarjeta de Alumnos Reprobados -->
                         <div class="bg-white rounded-xl shadow-card p-5 flex items-center border border-gray-100 hover:shadow-card-hover transition-smooth card-hover">
                             <div class="p-3 bg-red-50 rounded-lg mr-4">
-                                <i class="fas fa-thumbs-down text-red-500 text-xl"></i>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
                             </div>
                             <div>
-                                <div class="text-sm text-text-secondary">Alumnos reprobados</div>
-                                <div class="font-bold text-2xl text-red-600">12</div>
-                                <div class="text-xs text-green-500 mt-1 flex items-center">
-                                    <i class="fas fa-arrow-down mr-1"></i> 2% menos que el semestre pasado
+                                <div class="text-sm text-gray-500">Alumnos reprobados</div>
+                                <div class="font-bold text-2xl text-red-600">{{ $estadisticas['reprobados'] }}</div>
+                                <div class="text-xs text-gray-400 mt-1">
+                                    {{ number_format($estadisticas['porcentaje_reprobacion'], 1) }}% del total
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Tarjeta de estadística 3 -->
+                         <!-- Tarjeta de Alumnos Aprobados -->
                         <div class="bg-white rounded-xl shadow-card p-5 flex items-center border border-gray-100 hover:shadow-card-hover transition-smooth card-hover">
                             <div class="p-3 bg-green-50 rounded-lg mr-4">
-                                <i class="fas fa-thumbs-up text-secondary text-xl"></i>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
                             </div>
                             <div>
-                                <div class="text-sm text-text-secondary">Alumnos aprobados</div>
-                                <div class="font-bold text-2xl text-secondary-dark">126</div>
-                                <div class="text-xs text-green-500 mt-1 flex items-center">
-                                    <i class="fas fa-arrow-up mr-1"></i> 8% más que el semestre pasado
+                                <div class="text-sm text-gray-500">Alumnos aprobados</div>
+                                <div class="font-bold text-2xl text-green-600">{{ $estadisticas['aprobados'] }}</div>
+                                <div class="text-xs text-gray-400 mt-1">
+                                    {{ number_format($estadisticas['porcentaje_aprobacion'], 1) }}% del total
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Tarjeta de estadística 4 -->
-                        <div class="bg-white rounded-xl shadow-card p-5 flex items-center border border-gray-100 hover:shadow-card-hover transition-smooth card-hover">
-                            <div class="p-3 bg-blue-50 rounded-lg mr-4">
-                                <i class="fas fa-chart-line text-accent text-xl"></i>
-                            </div>
-                            <div>
-                                <div class="text-sm text-text-secondary">Promedio general</div>
-                                <div class="font-bold text-2xl text-accent-dark">8.7</div>
-                                <div class="text-xs text-green-500 mt-1 flex items-center">
-                                    <i class="fas fa-arrow-up mr-1"></i> 0.3 puntos más alto
-                                </div>
+                     <!-- Tarjeta de Promedio General -->
+                    <div class="bg-white rounded-xl shadow-card p-5 flex items-center border border-gray-100 hover:shadow-card-hover transition-smooth card-hover">
+                        <div class="p-3 bg-blue-50 rounded-lg mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">Promedio general</div>
+                            <div class="font-bold text-2xl text-blue-600">{{ number_format($estadisticas['promedio_general'], 1) }}</div>
+                            <div class="text-xs text-gray-400 mt-1">
+                                {{ $estadisticas['total_calificaciones'] }} calificaciones
                             </div>
                         </div>
+                    </div>
+                    
                     </div>
                 </div>
 

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash; // Importa el facade Hash
 use App\Models\Alumno;
 use App\Models\Coordinador;
 use App\Models\Profesor;
+use App\Models\Inscripcion;
 use Database\Factories\UserFactory;
 
 class AuthController extends Controller
@@ -132,6 +133,49 @@ class AuthController extends Controller
     {
         Auth::logout();
         return redirect('/');
+    }
+
+
+    public function coordinadorDashboard()
+    {
+    
+        
+        $inscripciones = Inscripcion::with(['alumno', 'grupo'])
+            ->where('estatus_inscripcion', 'Aprobada')
+            ->get();
+        
+        $inscripciones = Inscripcion::with(['alumno', 'grupo'])
+        ->where('estatus_inscripcion', 'Aprobada')
+        ->get();
+    
+    $totalAlumnos = $inscripciones->count();
+    
+    // Alumnos con calificación asignada (no null)
+    $alumnosCalificados = $inscripciones->whereNotNull('calificacion_final');
+    $totalCalificados = $alumnosCalificados->count();
+    
+    // Cálculos solo sobre alumnos con calificación
+    $aprobados = $alumnosCalificados->where('calificacion_final', '>=', 70)->count();
+    $reprobados = $alumnosCalificados->where('calificacion_final', '<', 70)->count();
+    $promedioGeneral = $alumnosCalificados->avg('calificacion_final');
+    
+    // Alumnos sin calificación aún
+    $sinCalificacion = $totalAlumnos - $totalCalificados;
+
+    return view('coordinador', [
+        'nombre_completo' => session('user_fullname'),
+        'rfc_coordinador' => session('user_identifier'),
+        'estadisticas' => [
+            'total_alumnos' => $totalAlumnos,
+            'aprobados' => $aprobados,
+            'reprobados' => $reprobados,
+            'sin_calificacion' => $sinCalificacion, // Nuevo campo
+            'promedio_general' => $promedioGeneral ?: 0,
+            'porcentaje_aprobacion' => $totalCalificados > 0 ? ($aprobados / $totalCalificados) * 100 : 0,
+            'porcentaje_reprobacion' => $totalCalificados > 0 ? ($reprobados / $totalCalificados) * 100 : 0,
+            'total_calificaciones' => $totalCalificados
+        ]
+    ]);
     }
 
 

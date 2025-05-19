@@ -46,13 +46,10 @@ Route::get('/profesor', function () {
     ]);
 })->middleware('auth:profesor');
 
+
 // Ruta del dashboard del coordinador
-Route::get('/coordinador', function () {
-    return view('coordinador', [
-        'nombre_completo' => session('user_fullname'),
-        'rfc_coordinador' => session('user_identifier')
-    ]);
-})->middleware('auth:coordinador');
+Route::get('/coordinador', [AuthController::class, 'coordinadorDashboard'])
+    ->middleware('auth:coordinador');
 
 
 
